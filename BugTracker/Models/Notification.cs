@@ -14,7 +14,7 @@ namespace BugTracker.Models
 
         //foreign keys
         public int TicketId { get; set; }
-        public int ProjectedId { get; set; }
+        public int ProjectId { get; set; }
         [Required]
         public string? SenderId  { get; set; }
         [Required]
@@ -25,7 +25,7 @@ namespace BugTracker.Models
         public virtual Ticket? Ticket { get; set; }
         public virtual Project? Project { get; set; }
         public virtual BTUser? Sender { get; set; }
-        public virtual Recipient? Recipient { get; set; }
+        public virtual BTUser? Recipient { get; set; }
 
 
 

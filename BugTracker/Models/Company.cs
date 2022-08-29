@@ -10,12 +10,14 @@ namespace BugTracker.Models
         [Required]
         public string? Name { get; set; }
         public string? Description { get; set; }
+
+        [DataType(DataType.Upload)]
         [NotMapped]
         public IFormFile? ImageFromFile { get; set; }
         public string? ImageFileName { get; set; }
         public string? ImageFileTyle { get; set; }
 
-        public ICollection<Project> Projects = new HashSet<Project>();
+        public virtual ICollection<Project>? Projects { get; set; } = new HashSet<Project>();
         public virtual ICollection<BTUser>? Members { get; set; } = new HashSet<BTUser>();
         public virtual ICollection<Invite> Invites { get; set; } = new HashSet<Invite>();
 

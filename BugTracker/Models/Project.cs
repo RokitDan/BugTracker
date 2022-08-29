@@ -13,6 +13,8 @@ namespace BugTracker.Models
         public DateTime CreatedDate { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
+
+        [DataType(DataType.Upload)]
         [NotMapped]
         public IFormFile? ImageFromFile { get; set; }
         public string? ImageFileName { get; set; }
@@ -23,7 +25,7 @@ namespace BugTracker.Models
         public virtual Company? Company { get; set; }
         public virtual ProjectPriority? ProjectPriority { get; set; }
         public virtual ICollection<BTUser>? Members { get; set; } = new HashSet<BTUser>();
-
+        public virtual ICollection<Ticket> Tickets { get; set; } = new HashSet<Ticket>();
 
     }
 }

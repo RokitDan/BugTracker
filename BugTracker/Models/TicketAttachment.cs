@@ -16,7 +16,7 @@ namespace BugTracker.Models
         //foreign keys
         public int TicketId { get; set; }
         [Required]
-        public string UserId { get; set; }
+        public string? UserId { get; set; }
 
         //navigation properties
         public virtual Ticket? Ticket {get; set; }
