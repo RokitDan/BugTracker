@@ -9,9 +9,9 @@ namespace BugTracker.Models
         public string? Description { get; set; }
         public DateTime CreatedDate { get; set; }
         [NotMapped]
-        public IFormFile? ImageFromFile { get; set; }
-        public string? ImageFileName { get; set; }
-        public string? ImageFileTyle { get; set; }
+        public IFormFile? FormFile { get; set; }
+        public byte[]? FileDate { get; set; }
+        public string? FileType { get; set; }
 
         //foreign keys
         public int TicketId { get; set; }

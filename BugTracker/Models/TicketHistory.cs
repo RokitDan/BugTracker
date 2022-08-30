@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace BugTracker.Models
 {
@@ -7,15 +8,23 @@ namespace BugTracker.Models
         public int Id { get; set; }
         public string? PropertyName { get; set; }
         public string? Description { get; set; }
+
+        [DataType(DataType.Date)]
         public DateTime? CreatedDate { get; set; }
+
+
+        [DisplayName("Previous Value")]
         public string? OldValue { get; set; }
+
+        [DisplayName("Current Value")]
         public string? NewValue { get; set; }
-        [Required]
-        public string UserId { get; set; }
+
 
         //foreign keys
         public int? TicketId { get; set; }
 
+        [Required]
+        public string? UserId { get; set; }
 
         //nav properties
         public virtual Ticket? Ticket { get; set; }
