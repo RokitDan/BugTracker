@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BugTracker.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220830195022_001-initial")]
+    [Migration("20220830203011_001-initial")]
     partial class _001initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -65,8 +65,8 @@ namespace BugTracker.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("ImageFileName")
-                        .HasColumnType("text");
+                    b.Property<byte[]>("ImageFileData")
+                        .HasColumnType("bytea");
 
                     b.Property<string>("ImageFileTyle")
                         .HasColumnType("text");

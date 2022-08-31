@@ -1,0 +1,79 @@
+﻿@model BugTracker.Models.Project
+@using BugTracker.Services.Interfaces
+@using BugTracker.Services
+@using BugTracker.Enums
+
+
+@inject IImageService ImageService;
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Project</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="CompanyId" />
+            <input type="hidden" asp-for="ImageData" />
+            <input type="hidden" asp-for="ImageType" />
+            <input type="hidden" asp-for="Archived" />
+            <input type="hidden" asp-for="CreatedDate" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+
+            <div class="form-group">
+                <label asp-for="StartDate" class="control-label"></label>
+                <input asp-for="StartDate" class="form-control" />
+                <span asp-validation-for="StartDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EndDate" class="control-label"></label>
+                <input asp-for="EndDate" class="form-control" />
+                <span asp-validation-for="EndDate" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="ProjectPriorityId" class="control-label"></label>
+                <select asp-for="ProjectPriorityId" class="form-control" asp-items="ViewBag.ProjectPriorityId"></select>
+            </div>
+            <div>
+                <label asp-for="ImageFile" class="form-label"></label>
+                <input asp-for="ImageFile" class="form-control" accept=".png,.jpg,.jpeg,.gif"
+                       onchange="document.getElementById('imageData').src = window.URL.createObjectURL(this.files[0])" />
+                <span asp-validation-for="ImageFile" class="text-danger"></span>
+            </div>
+            <div class="square-img-container">
+                    <img src="@ImageService.ConvertByteArrayToFile(Model.ImageData!, Model.ImageType!,(int)DefaultImage.ProjectImage)" alt="@Html.DisplayFor(modelItem => Model.Name)" style="width:35%; height:35%">
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }

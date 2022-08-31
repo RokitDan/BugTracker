@@ -19,7 +19,7 @@ public class BTUser : IdentityUser
     [DataType(DataType.Upload)]
     [NotMapped]
     public IFormFile? ImageFromFile { get; set; }
-    public string? ImageFileName { get; set; }
+    public byte[]? ImageFileData { get; set; }
     public string? ImageFileTyle { get; set; }
 
     //foreign key

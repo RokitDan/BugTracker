@@ -7,22 +7,43 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BugTracker.Data;
 using BugTracker.Models;
+using BugTracker.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using BugTracker.Models.Enums;
 
 namespace BugTracker.Controllers
 {
     public class TicketsController : Controller
     {
+
+
+
+        private readonly UserManager<BTUser> _userManager;
         private readonly ApplicationDbContext _context;
 
-        public TicketsController(ApplicationDbContext context)
+        public TicketsController(ApplicationDbContext context, UserManager<BTUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Tickets
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Tickets.Include(t => t.DeveloperUser).Include(t => t.Project).Include(t => t.SubmitterUser).Include(t => t.TicketPriority).Include(t => t.TicketStatus).Include(t => t.TicketType);
+            //  int projectId = (await _context.Projects.Id)
+            var applicationDbContext = _context.Tickets.Include(t => t.DeveloperUser)
+                                                       .Include(t => t.Project)
+                                                       .Include(t => t.SubmitterUser)
+                                                       .Include(t => t.TicketPriority)
+                                                       .Include(t => t.TicketStatus)
+                                                       .Include(t => t.TicketType);
+            //.Where(t => t.Project.Id == projectId);
+
+
+
+
+
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -53,12 +74,12 @@ namespace BugTracker.Controllers
         // GET: Tickets/Create
         public IActionResult Create()
         {
-            ViewData["DeveloperUserId"] = new SelectList(_context.Users, "Id", "Id");
-            ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Description");
-            ViewData["SubmitterUserId"] = new SelectList(_context.Users, "Id", "Id");
-            ViewData["TicketPriorityId"] = new SelectList(_context.TicketPriorities, "Id", "Id");
-            ViewData["TicketStatusId"] = new SelectList(_context.TicketStatuses, "Id", "Id");
-            ViewData["TicketTypeId"] = new SelectList(_context.TicketTypes, "Id", "Id");
+            ViewData["DeveloperUserId"] = new SelectList(_context.Users, "Id", "FirstName");
+            ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Name");
+            ViewData["SubmitterUserId"] = new SelectList(_context.Users, "Id", "FirstName");
+            ViewData["TicketPriorityId"] = new SelectList(_context.TicketPriorities, "Id", "Name");
+            ViewData["TicketStatusId"] = new SelectList(_context.TicketStatuses, "Id", "Name");
+            ViewData["TicketTypeId"] = new SelectList(_context.TicketTypes, "Id", "Name");
             return View();
         }
 
@@ -67,20 +88,25 @@ namespace BugTracker.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Description,CreatedDate,StartDate,Archived,ArchivedByProject,ProjectId,TicketTypeId,TicketStatusId,TicketPriorityId,DeveloperUserId,SubmitterUserId")] Ticket ticket)
+        public async Task<IActionResult> Create([Bind("Id,Title,Description,StartDate,,ProjectId,TicketTypeId,TicketStatusId,TicketPriorityId,DeveloperUserId,SubmitterUserId")] Ticket ticket)
         {
             if (ModelState.IsValid)
             {
+                //Dates
+                ticket.CreatedDate = DataUtility.GetPostGresDate(DateTime.Now);
+                ticket.StartDate = DataUtility.GetPostGresDate(ticket.StartDate);
+
+
                 _context.Add(ticket);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DeveloperUserId"] = new SelectList(_context.Users, "Id", "Id", ticket.DeveloperUserId);
-            ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Description", ticket.ProjectId);
-            ViewData["SubmitterUserId"] = new SelectList(_context.Users, "Id", "Id", ticket.SubmitterUserId);
-            ViewData["TicketPriorityId"] = new SelectList(_context.TicketPriorities, "Id", "Id", ticket.TicketPriorityId);
-            ViewData["TicketStatusId"] = new SelectList(_context.TicketStatuses, "Id", "Id", ticket.TicketStatusId);
-            ViewData["TicketTypeId"] = new SelectList(_context.TicketTypes, "Id", "Id", ticket.TicketTypeId);
+            //ViewData["DeveloperUserId"] = new SelectList(_context.Users, "Id", "Name", ticket.DeveloperUserId);
+            ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Name", ticket.ProjectId);
+            //ViewData["SubmitterUserId"] = new SelectList(_context.Users, "Id", "Name", ticket.SubmitterUserId);
+            ViewData["TicketPriorityId"] = new SelectList(_context.TicketPriorities, "Id", "Name", ticket.TicketPriorityId);
+            ViewData["TicketStatusId"] = new SelectList(_context.TicketStatuses, "Id", "Name", ticket.TicketStatusId);
+            ViewData["TicketTypeId"] = new SelectList(_context.TicketTypes, "Id", "Name", ticket.TicketTypeId);
             return View(ticket);
         }
 
@@ -97,12 +123,12 @@ namespace BugTracker.Controllers
             {
                 return NotFound();
             }
-            ViewData["DeveloperUserId"] = new SelectList(_context.Users, "Id", "Id", ticket.DeveloperUserId);
-            ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Description", ticket.ProjectId);
-            ViewData["SubmitterUserId"] = new SelectList(_context.Users, "Id", "Id", ticket.SubmitterUserId);
-            ViewData["TicketPriorityId"] = new SelectList(_context.TicketPriorities, "Id", "Id", ticket.TicketPriorityId);
-            ViewData["TicketStatusId"] = new SelectList(_context.TicketStatuses, "Id", "Id", ticket.TicketStatusId);
-            ViewData["TicketTypeId"] = new SelectList(_context.TicketTypes, "Id", "Id", ticket.TicketTypeId);
+           // ViewData["DeveloperUserId"] = new SelectList(_context.Users, "Id", "Name", ticket.DeveloperUserId);
+            ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Name", ticket.ProjectId);
+            //ViewData["SubmitterUserId"] = new SelectList(_context.Users, "Id", "Name", ticket.SubmitterUserId);
+            ViewData["TicketPriorityId"] = new SelectList(_context.TicketPriorities, "Id", "Name", ticket.TicketPriorityId);
+            ViewData["TicketStatusId"] = new SelectList(_context.TicketStatuses, "Id", "Name", ticket.TicketStatusId);
+            ViewData["TicketTypeId"] = new SelectList(_context.TicketTypes, "Id", "Name", ticket.TicketTypeId);
             return View(ticket);
         }
 
@@ -185,14 +211,14 @@ namespace BugTracker.Controllers
             {
                 _context.Tickets.Remove(ticket);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool TicketExists(int id)
         {
-          return (_context.Tickets?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Tickets?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

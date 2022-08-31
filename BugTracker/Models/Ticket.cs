@@ -7,7 +7,7 @@ namespace BugTracker.Models
 {
     public class Ticket
     {
-        public int Id { get; set; }
+        public int Id { get; set; } //hidden in view
 
         [Required]
         [DisplayName("Ticket Title")]
@@ -19,16 +19,16 @@ namespace BugTracker.Models
 
         [DataType(DataType.Date)]
         [DisplayName("Created Date")]
-        public DateTime CreatedDate { get; set; }
+        public DateTime CreatedDate { get; set; } //hidden in view
 
         [DataType(DataType.Date)]
         [DisplayName("Start Date")]
         public DateTime StartDate { get; set; }
 
-        public bool Archived { get; set; }
+        public bool Archived { get; set; }//hidden in view
 
         [DisplayName("Archived By Project")]
-        public bool ArchivedByProject { get; set; }
+        public bool ArchivedByProject { get; set; }//hidden in view
 
         // foreign keys
         public int ProjectId { get; set; }

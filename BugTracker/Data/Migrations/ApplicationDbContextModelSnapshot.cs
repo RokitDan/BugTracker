@@ -63,8 +63,8 @@ namespace BugTracker.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("ImageFileName")
-                        .HasColumnType("text");
+                    b.Property<byte[]>("ImageFileData")
+                        .HasColumnType("bytea");
 
                     b.Property<string>("ImageFileTyle")
                         .HasColumnType("text");

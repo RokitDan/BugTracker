@@ -7,10 +7,10 @@ namespace BugTracker.Models
     public class Project
     {
         //primary key
-        public int Id { get; set; }
+        public int Id { get; set; } //hidden in view
 
         //foreign key
-        public int CompanyId { get; set; }
+        public int CompanyId { get; set; } //hidden in view
 
         [Required]
         public string? Name { get; set; }
@@ -20,7 +20,7 @@ namespace BugTracker.Models
 
         [DataType(DataType.Date)]
         [DisplayName("Created Date")]
-        public DateTime CreatedDate { get; set; }
+        public DateTime CreatedDate { get; set; } //hidden in view
 
         [DataType(DataType.Date)]
         [DisplayName("Start Date")]
@@ -31,8 +31,8 @@ namespace BugTracker.Models
         public DateTime EndDate { get; set; }
 
         //Propertires for storing image
-        public byte[]? ImageData { get; set; } //= Array.Empty<byte>();
-        public string? ImageType { get; set; } //= "";
+        public byte[]? ImageData { get; set; } //= Array.Empty<byte>();  //hidden in view
+        public string? ImageType { get; set; } //= "";  //hidden in view
 
         //Property for passing file information from the form(html) to the post.
         //Also not saved in teh database via [NotMapped] attribute
@@ -40,7 +40,7 @@ namespace BugTracker.Models
         [NotMapped]
         public virtual IFormFile? ImageFile { get; set; }
 
-        public bool Archived { get; set; }
+        public bool Archived { get; set; } //hidden in view
 
         public int ProjectPriorityId { get; set; }
 
