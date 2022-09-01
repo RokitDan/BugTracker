@@ -1,4 +1,10 @@
-﻿@model IEnumerable<BugTracker.Models.Ticket>
+﻿@model IEnumerable<BugTracker.Models.Project>
+@using BugTracker.Enums
+@using BugTracker.Services
+@using BugTracker.Services.Interfaces
+
+@inject IImageService ImageService
+
 
 @{
     ViewData["Title"] = "Index";
@@ -13,7 +19,7 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Title)
+                @Html.DisplayNameFor(model => model.Name)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Description)
@@ -25,28 +31,20 @@
                 @Html.DisplayNameFor(model => model.StartDate)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.EndDate)
+            </th>
+            <th>
+                <span>Image</span>
+            </th>
+
+            <th>
                 @Html.DisplayNameFor(model => model.Archived)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ArchivedByProject)
+                @Html.DisplayNameFor(model => model.Company)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Project)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TicketPriority)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TicketStatus)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TicketType)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DeveloperUser)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SubmitterUser)
+                @Html.DisplayNameFor(model => model.ProjectPriority)
             </th>
             <th></th>
         </tr>
@@ -56,7 +54,7 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Title)
+                    @Html.DisplayFor(modelItem => item.Name)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Description)
@@ -68,33 +66,33 @@
                     @Html.DisplayFor(modelItem => item.StartDate)
                 </td>
                 <td>
+                    @Html.DisplayFor(modelItem => item.EndDate)
+                </td>
+                <td>
+                    <img src="@ImageService.ConvertByteArrayToFile(item.ImageData!, item.ImageType!,(int)DefaultImage.ProjectImage)" alt="@Html.DisplayFor(modelItem => item.Name)" style="width:40%; height:40%">
+                </td>
+
+                <td>
                     @Html.DisplayFor(modelItem => item.Archived)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ArchivedByProject)
+                    @Html.DisplayFor(modelItem => item.Company.Name)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Project.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TicketPriority.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TicketStatus.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TicketType.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DeveloperUserId)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.SubmitterUserId)
+                    @Html.DisplayFor(modelItem => item.ProjectPriority.Name)
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Archive" asp-route-id="@item.Id">Archive</a>
+                    @if (item.Archived != true)
+                    {
+                        <a asp-action="Archive" asp-route-id="@item.Id">Archive</a>
+                    }
+                    else
+                    {
+                        <a asp-action="Restore" asp-route-id="@item.Id">Restore</a>
+                    }
+
                 </td>
             </tr>
         }

@@ -13,6 +13,7 @@ namespace BugTracker.Models
         public int CompanyId { get; set; } //hidden in view
 
         [Required]
+        [DisplayName("Project Name")]
         public string? Name { get; set; }
 
         [Required]
@@ -31,8 +32,8 @@ namespace BugTracker.Models
         public DateTime EndDate { get; set; }
 
         //Propertires for storing image
-        public byte[]? ImageData { get; set; } //= Array.Empty<byte>();  //hidden in view
-        public string? ImageType { get; set; } //= "";  //hidden in view
+        public byte[]? ImageData { get; set; }   //hidden in view
+        public string? ImageType { get; set; }   //hidden in view
 
         //Property for passing file information from the form(html) to the post.
         //Also not saved in teh database via [NotMapped] attribute

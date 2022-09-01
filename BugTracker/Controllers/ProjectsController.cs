@@ -14,32 +14,46 @@ using BugTracker.Models.Enums;
 
 namespace BugTracker.Controllers
 {
+
+    [Authorize]
     public class ProjectsController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly IImageService _imageService;
         private readonly UserManager<BTUser> _userManager; //UserManage is designed to accept Identity type parameters or its children
+        private readonly IBTProjectService _projectService;
 
-        public ProjectsController(ApplicationDbContext context, IImageService imageService, UserManager<BTUser> userManager)
+        public ProjectsController(ApplicationDbContext context, IImageService imageService, UserManager<BTUser> userManager, IBTProjectService projectService)
         {
             _context = context;
             _imageService = imageService;
             _userManager = userManager;
+            _projectService = projectService;
         }
 
-        // GET: Projects
-        public async Task<IActionResult> Index()
+        // GET: Current Projects
+        public async Task<IActionResult> Index(int companyId)
         {
+            companyId = (await _userManager.GetUserAsync(User)).CompanyId;
 
-            int companyId = (await _userManager.GetUserAsync(User)).CompanyId;
-            var applicationDbContext = _context.Projects.Include(p => p.Company)
-                                                        .Include(p => p.ProjectPriority)
-                                                        .Where(p => p.Company.Id == companyId);
-            return View(await applicationDbContext.ToListAsync());
+            var currentProjects = await _projectService.GetCurrentProjectsByCompanyIdAsync(companyId);
 
+            return View(currentProjects);
 
-     
         }
+
+        //GET: All Projects
+
+        public async Task<IActionResult> AllProjects(int companyId)
+        {
+            companyId = (await _userManager.GetUserAsync(User)).CompanyId;
+
+            var allProjects = await _projectService.GetAllProjectsByCompanyIdAsync(companyId);
+
+            return View(allProjects);
+
+        }
+
 
         // GET: Projects/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -49,10 +63,7 @@ namespace BugTracker.Controllers
                 return NotFound();
             }
 
-            var project = await _context.Projects
-                .Include(p => p.Company)
-                .Include(p => p.ProjectPriority)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var project = await _projectService.GetProjectByIdAsync(id);
             if (project == null)
             {
                 return NotFound();
@@ -64,7 +75,8 @@ namespace BugTracker.Controllers
         // GET: Projects/Create
         public IActionResult Create()
         {
-            //ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Name");
+            //TODO: Abstract the use of _context
+
             ViewData["ProjectPriorityId"] = new SelectList(_context.ProjectPriorities, "Id", "Name");
 
             return View();
@@ -79,6 +91,9 @@ namespace BugTracker.Controllers
         {
             if (ModelState.IsValid)
             {
+
+                //TODO: Make the companyId retrieval more efficient because the program is currently hitting the database everytime the program needs companyId. It is not efficient this way
+
                 project.CompanyId = (await _userManager.GetUserAsync(User)).CompanyId;
 
                 //Dates
@@ -105,6 +120,7 @@ namespace BugTracker.Controllers
             return View(project);
         }
 
+        [Authorize(Roles = "Admin, ProjectManager")]
         // GET: Projects/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -114,6 +130,7 @@ namespace BugTracker.Controllers
             }
 
             var project = await _context.Projects.FindAsync(id);
+
             if (project == null)
             {
                 return NotFound();
@@ -127,9 +144,10 @@ namespace BugTracker.Controllers
         // POST: Projects/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,CompanyId,Name,Description,CreatedDate,StartDate,EndDate,ImageData,ImageType,Archived,ProjectPriorityId")] Project project)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,CompanyId,Name,Description,CreatedDate,StartDate,EndDate,ImageData,ImageType,Archived,ImageFile,ProjectPriorityId")] Project project)
         {
             if (id != project.Id)
             {
@@ -173,8 +191,68 @@ namespace BugTracker.Controllers
             return View(project);
         }
 
-        // GET: Projects/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // GET: Projects/Archive/5
+        public async Task<IActionResult> Archive(int? id)
+        {
+            if (id == null || _context.Projects == null)
+            {
+                return NotFound();
+            }
+
+            var project = _projectService.GetProjectByIdAsync(id);
+            if (project == null)
+            {
+                return NotFound();
+            }
+
+            return View(project);
+        }
+
+        // POST: Projects/Archive/5
+        [HttpPost, ActionName("Archive")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ArchiveConfirmed(int id)
+        {
+            if (_context.Projects == null)
+            {
+                return Problem("Entity set 'ApplicationDbContext.Projects'  is null.");
+            }
+            var project = await _context.Projects.FindAsync(id);
+
+            if (project != null)
+            {
+                project!.Archived = true;
+
+                foreach (Ticket ticket in project.Tickets)
+                {
+                    ticket.ArchivedByProject = true;
+                }
+                await _context.SaveChangesAsync();
+
+
+            }
+            return RedirectToAction(nameof(Index));
+
+        }
+
+
+
+        // GET: ArchivedProjects
+        public async Task<IActionResult> ArchivedProjects(int companyId)
+        {
+
+            companyId = (await _userManager.GetUserAsync(User)).CompanyId;
+
+            var archivedProjects = await _projectService.GetArchivedProjectsByCompanyIdAsync(companyId);
+
+            return View(archivedProjects);
+
+        }
+
+
+        //GET: Project to Restore and then confirm
+        [Authorize(Roles = "Admin, ProjectManager")]
+        public async Task<IActionResult> Restore(int? id)
         {
             if (id == null || _context.Projects == null)
             {
@@ -191,30 +269,40 @@ namespace BugTracker.Controllers
             }
 
             return View(project);
+
         }
 
-        // POST: Projects/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost, ActionName("Restore")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> RestoreConfirmed(int id)
         {
             if (_context.Projects == null)
             {
                 return Problem("Entity set 'ApplicationDbContext.Projects'  is null.");
             }
             var project = await _context.Projects.FindAsync(id);
+
             if (project != null)
             {
-                _context.Projects.Remove(project);
+                project!.Archived = false;
+
+                foreach (Ticket ticket in project.Tickets)
+                {
+                    ticket.ArchivedByProject = false;
+                }
+
             }
 
+
+
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(ArchivedProjects));
         }
 
         private bool ProjectExists(int id)
         {
             return (_context.Projects?.Any(e => e.Id == id)).GetValueOrDefault();
         }
+
     }
 }

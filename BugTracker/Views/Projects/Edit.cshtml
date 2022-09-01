@@ -59,7 +59,7 @@
                 <span asp-validation-for="ImageFile" class="text-danger"></span>
             </div>
             <div class="square-img-container">
-                    <img src="@ImageService.ConvertByteArrayToFile(Model.ImageData!, Model.ImageType!,(int)DefaultImage.ProjectImage)" alt="@Html.DisplayFor(modelItem => Model.Name)" style="width:35%; height:35%">
+                <img src="@ImageService.ConvertByteArrayToFile(Model.ImageData!, Model.ImageType!,(int)DefaultImage.ProjectImage)" alt="@Html.DisplayFor(modelItem => Model.Name)" style="max-width: 200px">
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

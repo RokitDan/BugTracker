@@ -2,11 +2,14 @@
 
 namespace BugTracker.Services
 {
+
+    //image service will also take care of other types of file attachments. Antonio has named his BTFileService
+
     public class ImageService : IImageService
     {
         private readonly string _defaultProjectImageSrc = "/img/DefaultProjectImage.png";
-        private readonly string _defaultCompanyImageSrc = "/img/DefaultCompanyImage.jpg";
-        private readonly string _defaultBTUserImageSrc = "/img/DefaultBTUserImage.jpg";
+        private readonly string _defaultCompanyImageSrc = "/img/DefaultCompanyImage.png";
+        private readonly string _defaultBTUserImageSrc = "/img/DefaultBTUserImage.png";
 
         //C:\Users\dlees\OneDrive\Documents\codeCF\vsRepos\BlogApp\BlogApp\wwwroot\img\DefaultContactImage.png
 
@@ -14,7 +17,9 @@ namespace BugTracker.Services
 
         public string ConvertByteArrayToFile(byte[] fileData, string extension, int imageType)
         {
-            if (fileData == null || fileData.Length == 0)
+            //if (fileData == null || fileData.Length == 0 && imageType != null)
+
+            if (fileData == null || fileData.Length == 0 && imageType != null)
             {
                 switch (imageType)
                 {
@@ -26,7 +31,7 @@ namespace BugTracker.Services
             }
             try
             {
-                string imageBase64Data = Convert.ToBase64String(fileData);
+                string imageBase64Data = Convert.ToBase64String(fileData!);
                 return string.Format($"data:{extension};base64,{imageBase64Data}");
             }
             catch (Exception)
@@ -35,10 +40,7 @@ namespace BugTracker.Services
             }
         }
 
-        public string ConvertByteArrayToFile(byte[] fileData, string extension)
-        {
-            throw new NotImplementedException();
-        }
+
 
         public async Task<byte[]> ConvertFileToByteArrayAsync(IFormFile file)
         {

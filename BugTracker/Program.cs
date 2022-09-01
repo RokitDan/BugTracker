@@ -25,6 +25,7 @@ builder.Services.AddIdentity<BTUser, IdentityRole>(options => options.SignIn.Req
 
 //custom services
 builder.Services.AddScoped<IImageService, ImageService>();
+builder.Services.AddScoped<IBTProjectService, BTProjectService>();
 
 //var host = builder.Build();
 //AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
