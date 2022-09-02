@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BugTracker.Data;
 using BugTracker.Models;
+using BugTracker.Models.ViewModels;
 using BugTracker.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -22,19 +23,21 @@ namespace BugTracker.Controllers
         private readonly IImageService _imageService;
         private readonly UserManager<BTUser> _userManager; //UserManage is designed to accept Identity type parameters or its children
         private readonly IBTProjectService _projectService;
+        private readonly IBTRolesService _rolesService;
 
-        public ProjectsController(ApplicationDbContext context, IImageService imageService, UserManager<BTUser> userManager, IBTProjectService projectService)
+        public ProjectsController(ApplicationDbContext context, IImageService imageService, UserManager<BTUser> userManager, IBTProjectService projectService, IBTRolesService rolesService)
         {
             _context = context;
             _imageService = imageService;
             _userManager = userManager;
             _projectService = projectService;
+            _rolesService = rolesService;
         }
 
         // GET: Current Projects
-        public async Task<IActionResult> Index(int companyId)
+        public async Task<IActionResult> Index()
         {
-            companyId = (await _userManager.GetUserAsync(User)).CompanyId;
+            int companyId = (await _userManager.GetUserAsync(User)).CompanyId;
 
             var currentProjects = await _projectService.GetCurrentProjectsByCompanyIdAsync(companyId);
 
@@ -48,7 +51,7 @@ namespace BugTracker.Controllers
         {
             companyId = (await _userManager.GetUserAsync(User)).CompanyId;
 
-            var allProjects = await _projectService.GetAllProjectsByCompanyIdAsync(companyId);
+            List<Project> allProjects = await _projectService.GetAllProjectsByCompanyIdAsync(companyId);
 
             return View(allProjects);
 
@@ -63,7 +66,7 @@ namespace BugTracker.Controllers
                 return NotFound();
             }
 
-            var project = await _projectService.GetProjectByIdAsync(id);
+            var project = await _projectService.GetProjectByIdAsync(id!.Value);
             if (project == null)
             {
                 return NotFound();
@@ -107,8 +110,7 @@ namespace BugTracker.Controllers
                     project.ImageType = project.ImageFile.ContentType;
                 }
 
-                _context.Add(project);
-                await _context.SaveChangesAsync();
+                await _projectService.AddProjectAsync(project);
                 return RedirectToAction(nameof(Index));
             }
 
@@ -168,8 +170,7 @@ namespace BugTracker.Controllers
                         project.ImageType = project.ImageFile.ContentType;
                     }
 
-                    _context.Update(project);
-                    await _context.SaveChangesAsync();
+                    await _projectService.UpdateProjectAsync(project);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -199,7 +200,7 @@ namespace BugTracker.Controllers
                 return NotFound();
             }
 
-            var project = _projectService.GetProjectByIdAsync(id);
+            var project = await _projectService.GetProjectByIdAsync(id!.Value);
             if (project == null)
             {
                 return NotFound();
@@ -217,33 +218,22 @@ namespace BugTracker.Controllers
             {
                 return Problem("Entity set 'ApplicationDbContext.Projects'  is null.");
             }
-            var project = await _context.Projects.FindAsync(id);
 
-            if (project != null)
-            {
-                project!.Archived = true;
+            await _projectService.ArchiveProjectAsync(id);
 
-                foreach (Ticket ticket in project.Tickets)
-                {
-                    ticket.ArchivedByProject = true;
-                }
-                await _context.SaveChangesAsync();
-
-
-            }
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(ArchivedProjects));
 
         }
 
 
 
         // GET: ArchivedProjects
-        public async Task<IActionResult> ArchivedProjects(int companyId)
+        public async Task<IActionResult> ArchivedProjects()
         {
 
-            companyId = (await _userManager.GetUserAsync(User)).CompanyId;
+            int companyId = (await _userManager.GetUserAsync(User)).CompanyId;
 
-            var archivedProjects = await _projectService.GetArchivedProjectsByCompanyIdAsync(companyId);
+            List<Project> archivedProjects = await _projectService.GetArchivedProjectsByCompanyIdAsync(companyId);
 
             return View(archivedProjects);
 
@@ -259,10 +249,7 @@ namespace BugTracker.Controllers
                 return NotFound();
             }
 
-            var project = await _context.Projects
-                .Include(p => p.Company)
-                .Include(p => p.ProjectPriority)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var project = await _projectService.GetProjectByIdAsync(id!.Value);
             if (project == null)
             {
                 return NotFound();
@@ -276,28 +263,67 @@ namespace BugTracker.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RestoreConfirmed(int id)
         {
-            if (_context.Projects == null)
             {
-                return Problem("Entity set 'ApplicationDbContext.Projects'  is null.");
-            }
-            var project = await _context.Projects.FindAsync(id);
-
-            if (project != null)
-            {
-                project!.Archived = false;
-
-                foreach (Ticket ticket in project.Tickets)
+                if (_context.Projects == null)
                 {
-                    ticket.ArchivedByProject = false;
+                    return Problem("Entity set 'ApplicationDbContext.Projects'  is null.");
                 }
 
+                await _projectService.RestoreProjectAsync(id);
+
+                return RedirectToAction(nameof(Index));
+
+            }
+        }
+
+        //GET: Assign Project Manager
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AssignProjectManager(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
             }
 
+            AssignPMViewModel model = new();
+
+            int companyId = (await _userManager.GetUserAsync(User)).CompanyId;
+
+            model.Project = await _projectService.GetProjectByIdAsync(id.Value);
+            //Service call to RoleService
+            model.PMList = new SelectList(await _rolesService.GetUsersInRoleAsync(nameof(BTRoles.ProjectManager), companyId), "Id", "FullName");
 
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(ArchivedProjects));
+
+            return View(model);
         }
+
+        //POST: Assign Project Manager
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AssignProjectManager(AssignPMViewModel model)
+        {
+            if (!string.IsNullOrEmpty(model.PMID))
+            {
+                //Add PM to Project and TODO: enhance this process
+                Project project = await _projectService.GetProjectByIdAsync(model.Project!.Id);
+                BTUser? projectManager = await _context.Users.FindAsync(model.PMID);
+
+                project.Members!.Add(projectManager!);
+
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            return RedirectToAction(nameof(AssignProjectManager), new { id = model.Project!.Id });
+        }
+
+
+
+
+
 
         private bool ProjectExists(int id)
         {

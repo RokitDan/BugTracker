@@ -19,37 +19,56 @@ namespace BugTracker.Services
         }
 
 
-        public Task AddProjectAsync(Project project)
+        public async Task AddProjectAsync(Project project)
         {
-            //try
-            //{
-            //    //return _context.Add(project);
-
-
-            //}
-            //catch
-            //{
-                throw new NotImplementedException();
-            //}
+            try
+            {
+                await _context.AddAsync(project);
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                throw;
+            }
         }
 
-        public Task ArchiveProjectAsync(int projectId)
+        public async Task ArchiveProjectAsync(int projectId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                Project project = await GetProjectByIdAsync(projectId);
+
+                if (project != null)
+                {
+                    project!.Archived = true;
+
+                    foreach (Ticket ticket in project.Tickets)
+                    {
+                        ticket.ArchivedByProject = true;
+                    }
+                    await _context.SaveChangesAsync();
+                }
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         public async Task<List<Project>> GetAllProjectsByCompanyIdAsync(int companyId)
         {
             try
             {
-                return await _context.Projects.Include(p => p.Company)
+                List<Project> allProjects = await _context.Projects.Include(p => p.Company)
                                               .Include(p => p.ProjectPriority)
                                               .Where(p => p.CompanyId == companyId)
                                               .ToListAsync();
+
+                return allProjects;
             }
             catch
             {
-                throw new NotImplementedException();
+                throw;
             }
         }
 
@@ -57,11 +76,11 @@ namespace BugTracker.Services
         {
             try
             {
-                return await _context.Projects.Where(p => p.Archived == true)
+                return await _context.Projects.Where(p => p.Archived == true && p.CompanyId == companyId)
                                               .Include(p => p.Company)
                                               .Include(p => p.ProjectPriority)
-                                              .Where(p => p.CompanyId == companyId)
                                               .ToListAsync();
+
             }
             catch
             {
@@ -69,17 +88,7 @@ namespace BugTracker.Services
             }
         }
 
-        //public async Task GetCompanyIdAsync(BTUser user)
-        //{
-        //    try
-        //    {
-        //        return await _userManager.GetUserAsync(User)).CompanyId
-        //    }
-        //    catch
-        //    {
-        //    throw new NotImplementedException();
-        //    }
-        //}
+
 
         public async Task<List<Project>> GetCurrentProjectsByCompanyIdAsync(int companyId)
         {
@@ -93,34 +102,65 @@ namespace BugTracker.Services
             }
             catch
             {
-                throw new NotImplementedException();
+                throw;
             }
         }
 
-        public Task<Project> GetProjectByIdAsync(int? ProjectId)
+        public async Task<Project> GetProjectByIdAsync(int projectId)
         {
+
             try
             {
-                return _context.Projects
-                 .Include(p => p.Company)
-                 .Include(p => p.ProjectPriority)
-                 .FirstOrDefaultAsync(m => m.Id == ProjectId);
+                Project? project = await _context.Projects
+                .Include(p => p.Company)
+                .Include(p => p.Tickets)
+                .Include(p => p.ProjectPriority)
+                .FirstOrDefaultAsync(m => m.Id == projectId);
+
+                return project!;
             }
             catch
             {
-                throw new NotImplementedException();
+                throw;
 
             }
         }
 
-        public Task RestoreProjectAsync(int projectId)
+        public async Task RestoreProjectAsync(int projectId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                Project project = await GetProjectByIdAsync(projectId);
+
+                if (project != null)
+                {
+                    project!.Archived = false;
+
+                    foreach (Ticket ticket in project.Tickets)
+                    {
+                        ticket.ArchivedByProject = true;
+                    }
+                    await _context.SaveChangesAsync();
+                }
+            }
+            catch
+            {
+                throw;
+            }
         }
 
-        public Task UpdateProjectAsync(Project project)
+        public async Task UpdateProjectAsync(Project project)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _context.Update(project);
+                await _context.SaveChangesAsync();
+
+            }
+            catch
+            {
+                throw;
+            }
         }
     }
 }
