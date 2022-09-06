@@ -29,5 +29,23 @@ namespace BugTracker.Services
                 throw;
             }
         }
+
+
+
+
+        public async Task<bool> IsUserInRoleAsync(BTUser member, string roleName)
+        {
+            try
+            {
+                bool result = await _userManager.IsInRoleAsync(member, roleName);
+
+                return result;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
     }
 }

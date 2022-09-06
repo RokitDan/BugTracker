@@ -7,10 +7,10 @@
 
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Current Projects";
 }
 
-<h1>Index</h1>
+<h1>Current Projects</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -45,6 +45,9 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.ProjectPriority)
+            </th>
+            <th>
+                Project Manager
             </th>
             <th></th>
         </tr>
@@ -81,6 +84,20 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.ProjectPriority.Name)
                 </td>
+
+                @if (item.HasPM == true)
+                {
+                    <td>
+                        NAME OF PM
+                    </td>
+                }
+                else
+                {
+                    <td>
+                        <a asp-action="AssignProjectManager" asp-route-id="@item.Id">Assign PM</a>
+                    </td>
+                }
+
                 <td>
                     <a asp-action="AssignProjectManager" asp-route-id="@item.Id">Assign PM</a> |
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

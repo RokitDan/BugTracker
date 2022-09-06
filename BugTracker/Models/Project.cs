@@ -30,6 +30,7 @@ namespace BugTracker.Models
         [DataType(DataType.Date)]
         [DisplayName("End Date")]
         public DateTime EndDate { get; set; }
+        public bool? HasPM { get; set; }
 
         //Propertires for storing image
         public byte[]? ImageData { get; set; }   //hidden in view

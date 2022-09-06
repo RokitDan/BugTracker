@@ -278,7 +278,7 @@ namespace BugTracker.Controllers
 
         //GET: Assign Project Manager
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AssignProjectManager(int? id)
+        public async Task<IActionResult> AssignProjectManagerAsync(int? id)
         {
             if (id == null)
             {
@@ -290,8 +290,12 @@ namespace BugTracker.Controllers
             int companyId = (await _userManager.GetUserAsync(User)).CompanyId;
 
             model.Project = await _projectService.GetProjectByIdAsync(id.Value);
+
+            //Get current PM (if exists)
+            string? currentPMID = (await _projectService.GetProjectManagerAsync(model.Project.Id))?.Id;
+
             //Service call to RoleService
-            model.PMList = new SelectList(await _rolesService.GetUsersInRoleAsync(nameof(BTRoles.ProjectManager), companyId), "Id", "FullName");
+            model.PMList = new SelectList(await _rolesService.GetUsersInRoleAsync(nameof(BTRoles.ProjectManager), companyId), "Id", "FullName", currentPMID);
 
 
 
@@ -307,19 +311,35 @@ namespace BugTracker.Controllers
             if (!string.IsNullOrEmpty(model.PMID))
             {
                 //Add PM to Project and TODO: enhance this process
-                Project project = await _projectService.GetProjectByIdAsync(model.Project!.Id);
-                BTUser? projectManager = await _context.Users.FindAsync(model.PMID);
-
-                project.Members!.Add(projectManager!);
-
-                await _context.SaveChangesAsync();
+                await _projectService.AddProjectManagerAsync(model.PMID, model.Project!.Id);
 
                 return RedirectToAction(nameof(Index));
             }
 
+
+
+            int companyId = (await _userManager.GetUserAsync(User)).CompanyId;
+
+            model.Project = await _projectService.GetProjectByIdAsync(model.Project!.Id);
+
+            model.PMList = new SelectList(await _rolesService.GetUsersInRoleAsync(nameof(BTRoles.ProjectManager), companyId), "Id", "FullName");
+
+            string? currentPMID = (await _projectService.GetProjectManagerAsync(model.Project.Id))?.Id;
+
+
             return RedirectToAction(nameof(AssignProjectManager), new { id = model.Project!.Id });
         }
 
+
+        //GET: Unassigned Projects
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UnassignedProjects()
+        {
+            int companyId = (await _userManager.GetUserAsync(User)).CompanyId;
+
+            List<Project> unassignedProjects = await _projectService.GetUnassignedProjectsAsync(companyId);
+            return View(unassignedProjects);
+        }
 
 
 
