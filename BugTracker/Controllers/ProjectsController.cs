@@ -342,6 +342,28 @@ namespace BugTracker.Controllers
         }
 
 
+        //Get: Add Team Members Page
+        [Authorize(Roles = "Admin, ProjectManager")]
+        public async Task<IActionResult> AddTeamMembers(int id, Company company)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            // get the project
+            // get the company
+            // get all members associated with the company
+            // add members to the list property of the project
+
+
+
+            int companyId = (await _userManager.GetUserAsync(User)).CompanyId;
+            Project project = await _projectService.GetProjectByIdAsync(id);
+            return View(project);
+        }
+
+
+
 
 
 

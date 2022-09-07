@@ -12,6 +12,8 @@ namespace BugTracker.Models
         //foreign key
         public int CompanyId { get; set; } //hidden in view
 
+        //public BTUser? ProjectManager { get; set; }
+
         [Required]
         [DisplayName("Project Name")]
         public string? Name { get; set; }

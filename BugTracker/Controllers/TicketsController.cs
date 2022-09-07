@@ -22,11 +22,13 @@ namespace BugTracker.Controllers
 
         private readonly UserManager<BTUser> _userManager;
         private readonly ApplicationDbContext _context;
+        private readonly IBTTicketService _ticketService;
 
-        public TicketsController(ApplicationDbContext context, UserManager<BTUser> userManager)
+        public TicketsController(ApplicationDbContext context, UserManager<BTUser> userManager, IBTTicketService ticketService)
         {
             _context = context;
             _userManager = userManager;
+            _ticketService = ticketService;
         }
 
         // GET: Tickets

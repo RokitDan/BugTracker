@@ -1,10 +1,12 @@
 ﻿@model IEnumerable<BugTracker.Models.Project>
 @using BugTracker.Enums
+@using BugTracker.Models.Enums
 @using BugTracker.Services
 @using BugTracker.Services.Interfaces
 
 @inject IImageService ImageService
-
+@inject IBTProjectService ProjectService
+@inject IBTRolesService RolesService
 
 @{
     ViewData["Title"] = "Index";
@@ -46,6 +48,12 @@
             <th>
                 @Html.DisplayNameFor(model => model.ProjectPriority)
             </th>
+            <th>
+                Project Manager
+            </th>
+            <th>
+                Project Team
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -82,16 +90,19 @@
                     @Html.DisplayFor(modelItem => item.ProjectPriority.Name)
                 </td>
                 <td>
+                  <a asp-action="AssignProjectManager" asp-route-id="@item.Id">Assign PM</a>
+                </td>
+                <td>
+                    @foreach (BTUser member in item.Members)
+                    {
+                        <div>@member.FullName</div> <br />
+                    }
+                </td>
+                <td>
+                    
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    @if (item.Archived != true)
-                    {
-                        <a asp-action="Archive" asp-route-id="@item.Id">Archive</a>
-                    }
-                    else
-                    {
-                        <a asp-action="Restore" asp-route-id="@item.Id">Restore</a>
-                    }
+                    <a asp-action="Archive" asp-route-id="@item.Id">Archive</a>
 
                 </td>
             </tr>

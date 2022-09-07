@@ -11,7 +11,7 @@ namespace BugTracker.Services.Interfaces
         public Task<List<Project>> GetArchivedProjectsByCompanyIdAsync(int companyId);
         public Task<List<Project>> GetCurrentProjectsByCompanyIdAsync(int companyId);
         public Task<Project> GetProjectByIdAsync(int projectId);
-        public Task<BTUser> GetProjectManagerAsync(int projectId);
+        public Task<BTUser>? GetProjectManagerAsync(int projectId);
         public Task<List<Project>> GetUnassignedProjectsAsync(int companyId);
         public Task<bool> IsUserOnProjectAsync(string userId, int projectId);
         public Task RemoveProjectManagerAsync(int projectId);

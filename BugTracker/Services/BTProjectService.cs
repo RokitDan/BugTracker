@@ -68,6 +68,7 @@ namespace BugTracker.Services
                 return await _context.Projects.Where(p => p.Archived == true && p.CompanyId == companyId)
                                               .Include(p => p.Company)
                                               .Include(p => p.ProjectPriority)
+                                              .Include(p => p.Members)
                                               .ToListAsync();
 
             }
@@ -86,6 +87,7 @@ namespace BugTracker.Services
                 return await _context.Projects.Where(p => p.Archived == false)
                                               .Include(p => p.Company)
                                               .Include(p => p.ProjectPriority)
+                                              .Include(p => p.Members)
                                               .Where(p => p.CompanyId == companyId)
                                               .ToListAsync();
             }
@@ -186,9 +188,6 @@ namespace BugTracker.Services
                 if (currentPM != null)
                 {
                     await RemoveProjectManagerAsync(projectId);
-
-
-
                 }
 
                 //Add new PM
@@ -199,10 +198,12 @@ namespace BugTracker.Services
 
                     if (await _rolesService.IsUserInRoleAsync(selectedPM, nameof(BTRoles.ProjectManager)))
                     {
+                        //project.ProjectManager = selectedPM;
+                        selectedPM.IsProjectManager = true;
                         project.HasPM = true;
                         await _context.SaveChangesAsync();
-                    }
 
+                    }
 
                     return true;
 
@@ -338,12 +339,17 @@ namespace BugTracker.Services
                 // get all projects
                 // find out if any members are Project Managers
                 // if no members are project managers, add that project to a list
-                List<Project> unassignedProjects = await _context.Projects.Include(p => p.Company)
-                                               .Include(p => p.ProjectPriority)
-                                               .Where(p => p.Archived == false)
-                                               .Where(p => p.CompanyId == companyId)
-                                               .Where(p => p.HasPM == false || p.HasPM == null)
-                                               .ToListAsync();
+                List<Project> allProjects = await GetCurrentProjectsByCompanyIdAsync(companyId);
+
+                List<Project> unassignedProjects = new();
+
+                foreach (Project project in allProjects)
+                {
+                    if ((await GetProjectManagerAsync(project.Id)) == null)
+                    {
+                        unassignedProjects.Add(project);
+                    }
+                }
 
                 return unassignedProjects;
             }

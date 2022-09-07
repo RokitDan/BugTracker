@@ -1,9 +1,12 @@
 ﻿@model IEnumerable<BugTracker.Models.Project>
 @using BugTracker.Enums
+@using BugTracker.Models.Enums
 @using BugTracker.Services
 @using BugTracker.Services.Interfaces
 
 @inject IImageService ImageService
+@inject IBTProjectService ProjectService
+@inject IBTRolesService RolesService
 
 
 @{
@@ -49,6 +52,9 @@
             <th>
                 Project Manager
             </th>
+            <th>
+                Project Team
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -84,19 +90,24 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.ProjectPriority.Name)
                 </td>
-
-                @if (item.HasPM == true)
-                {
-                    <td>
-                        NAME OF PM
-                    </td>
-                }
-                else
-                {
-                    <td>
+                <td>
+                    @if (item.HasPM == true)
+                    {
+                        @((await ProjectService.GetProjectManagerAsync(item.Id))?.FullName)
+                    }
+                    else
+                    {
                         <a asp-action="AssignProjectManager" asp-route-id="@item.Id">Assign PM</a>
-                    </td>
-                }
+                    }
+                </td>
+                <td>
+                    @foreach (BTUser member in item.Members)
+                    {
+                        <div>@member.FullName</div> <br />
+                    }
+                    <a asp-action="AddProjectMember" asp-route-id="@item.Id">Add Team Members</a>
+
+                </td>
 
                 <td>
                     <a asp-action="AssignProjectManager" asp-route-id="@item.Id">Assign PM</a> |

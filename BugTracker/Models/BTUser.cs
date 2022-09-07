@@ -14,7 +14,9 @@ public class BTUser : IdentityUser
     public string? LastName { get; set; }
     [NotMapped]
     [DisplayName("Full Name")]
-    public string? FullName { get; set; }
+    public string? FullName { get { return $"{FirstName} {LastName}"; } }
+
+    public bool? IsProjectManager { get; set; }
 
     [DataType(DataType.Upload)]
     [NotMapped]
