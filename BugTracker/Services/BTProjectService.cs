@@ -4,6 +4,8 @@ using BugTracker.Models.Enums;
 using BugTracker.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using BugTracker.Extensions;
+
 
 
 namespace BugTracker.Services
@@ -11,17 +13,19 @@ namespace BugTracker.Services
     public class BTProjectService : IBTProjectService
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<BTUser> _userManager;
         private readonly IBTRolesService _rolesService;
+        //private readonly IImageService _imageService;
+        //private readonly UserManager<BTUser> _userManager;
+        //private readonly IBTTicketService _ticketService;
 
-        public BTProjectService(ApplicationDbContext context, UserManager<BTUser> userManager, IBTRolesService rolesService)
+        public BTProjectService(ApplicationDbContext context, IBTRolesService rolesService)
         {
             _context = context;
-            _userManager = userManager;
             _rolesService = rolesService;
-
+            //_imageService = imageService;
+            //_userManager = userManager;
+            //_ticketService = ticketService;
         }
-
 
         public async Task AddProjectAsync(Project project)
         {
@@ -59,8 +63,6 @@ namespace BugTracker.Services
             }
         }
 
-
-
         public async Task<List<Project>> GetArchivedProjectsByCompanyIdAsync(int companyId)
         {
             try
@@ -77,8 +79,6 @@ namespace BugTracker.Services
                 throw new NotImplementedException();
             }
         }
-
-
 
         public async Task<List<Project>> GetCurrentProjectsByCompanyIdAsync(int companyId)
         {
@@ -106,6 +106,7 @@ namespace BugTracker.Services
                 .Include(p => p.Company)
                 .Include(p => p.Tickets)
                 .Include(p => p.ProjectPriority)
+                .Include(p => p.Members)
                 .FirstOrDefaultAsync(m => m.Id == projectId);
 
                 return project!;
@@ -242,8 +243,6 @@ namespace BugTracker.Services
             }
         }
 
-
-
         public async Task<bool> UserRemovedFromProjectAsync(BTUser user, int projectId)
         {
             try
@@ -352,6 +351,53 @@ namespace BugTracker.Services
                 }
 
                 return unassignedProjects;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public async Task<bool> RemoveUsersButNotPMAsync(int projectId)
+        {
+            try
+            {
+                Project? project = await GetProjectByIdAsync(projectId);
+
+                foreach (BTUser user in project.Members!)
+                {
+                    if (!await _rolesService.IsUserInRoleAsync(user, nameof(BTRoles.ProjectManager)))
+                    {
+                        project.Members.Remove(user);
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+                return true;
+
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<List<BTUser>> GetDevsAndSubsAsync(int id, int companyId)
+        {
+            try
+            {
+                List<BTUser> devsAndSubs = new();
+                List<BTUser> companyMembers = _context.Users.Where(u => u.CompanyId == companyId).ToList();
+
+                foreach (var user in companyMembers)
+                {
+                    if (await _rolesService.IsUserInRoleAsync(user, "Developer") || (await _rolesService.IsUserInRoleAsync(user, "Submitter")))
+                    {
+                        devsAndSubs.Add(user);
+                    }
+
+                }
+                return devsAndSubs;
             }
             catch
             {

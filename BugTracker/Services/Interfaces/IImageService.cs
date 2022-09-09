@@ -7,5 +7,9 @@
 
         //converts byte array from database to image
         public string ConvertByteArrayToFile(byte[] fileData, string extension, int imageType);
+
+        public string GetFileIcon(string file);
+
+        public string FormatFileSize(long bytes);
     }
 }

@@ -377,7 +377,6 @@ namespace BugTracker.Data.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("SubmitterUserId")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("TicketPriorityId")
@@ -424,8 +423,12 @@ namespace BugTracker.Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
-                    b.Property<byte[]>("FileDate")
+                    b.Property<byte[]>("FileData")
                         .HasColumnType("bytea");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("FileType")
                         .HasColumnType("text");
@@ -830,9 +833,7 @@ namespace BugTracker.Data.Migrations
 
                     b.HasOne("BugTracker.Models.BTUser", "SubmitterUser")
                         .WithMany()
-                        .HasForeignKey("SubmitterUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("SubmitterUserId");
 
                     b.HasOne("BugTracker.Models.TicketPriority", "TicketPriority")
                         .WithMany()

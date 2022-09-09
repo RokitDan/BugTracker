@@ -1,0 +1,48 @@
+﻿@model BugTracker.Models.ViewModels.ProjectMembersViewModel
+
+@{
+    ViewData["Title"] = "Assign PM";
+}
+<h1>Project : @Model.Project?.Name</h1>
+<h4>Assign Project Manager</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post" asp-action="AddTeamMembers" asp-controller="Projects">
+            <input type="hidden" asp-for="Project!.Id" />
+
+            <h2>@Model.Project?.Name </h2>
+
+            <p>@Model.Project?.Description </p>
+
+
+            <div class="form-group">
+
+                <label asp-for="CompanyMembers" class="control-label">Add Team Members</label>
+                @*ViewBag is built into ASP*@
+                <select asp-for="SelectedMembers" class="form-select" asp-items="@Model.CompanyMembers" multiple aria-label="multiple select example">
+                </select>
+
+            </div>
+
+
+            @if (Model.SelectedMembers != null)
+            {
+                <div>
+                    <h2>Selected Team Members</h2>
+                    @foreach (string user in Model.SelectedMembers!)
+                    {
+                        //@Html.DisplayFor(Model => Model.SelectedMembers.FullName)
+                        <span>TEAM MEMBER NAME</span>
+                    }
+
+                </div>
+            }
+
+            <input type="submit" value="Assign" class="btn btn-primary" />
+        </form>
+    </div>
+</div>
+<div>
+    <a asp-action="Index">Back to Current Projects</a>
+</div>

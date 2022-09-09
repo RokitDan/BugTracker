@@ -90,22 +90,24 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.ProjectPriority.Name)
                 </td>
-                <td>
-                    @if (item.HasPM == true)
+                @{
+                    BTUser? projectManager = await ProjectService.GetProjectManagerAsync(item.Id)!;
+
+                    if (projectManager != null)
                     {
-                        @((await ProjectService.GetProjectManagerAsync(item.Id))?.FullName)
+                        <td>@projectManager.FullName</td>
                     }
                     else
                     {
-                        <a asp-action="AssignProjectManager" asp-route-id="@item.Id">Assign PM</a>
+                        <td><a asp-action="AssignProjectManager" asp-route-id="@item.Id">Assign PM</a></td>
                     }
-                </td>
+                }
                 <td>
                     @foreach (BTUser member in item.Members)
                     {
                         <div>@member.FullName</div> <br />
                     }
-                    <a asp-action="AddProjectMember" asp-route-id="@item.Id">Add Team Members</a>
+                    <a asp-action="AddTeamMembers" asp-route-id="@item.Id">Add Team Members</a>
 
                 </td>
 

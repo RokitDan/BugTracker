@@ -469,7 +469,7 @@ namespace BugTracker.Data.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Description = table.Column<string>(type: "text", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    FileDate = table.Column<byte[]>(type: "bytea", nullable: true),
+                    FileData = table.Column<byte[]>(type: "bytea", nullable: true),
                     FileType = table.Column<string>(type: "text", nullable: true),
                     TicketId = table.Column<int>(type: "integer", nullable: false),
                     UserId = table.Column<string>(type: "text", nullable: false)

@@ -12,6 +12,7 @@ using BugTracker.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using BugTracker.Models.Enums;
+using BugTracker.Extensions;
 
 namespace BugTracker.Controllers
 {
@@ -37,7 +38,9 @@ namespace BugTracker.Controllers
         // GET: Current Projects
         public async Task<IActionResult> Index()
         {
-            int companyId = (await _userManager.GetUserAsync(User)).CompanyId;
+            //int companyId = User.Identity!.GetCompanyId();
+
+            int companyId = User.Identity!.GetCompanyId();
 
             var currentProjects = await _projectService.GetCurrentProjectsByCompanyIdAsync(companyId);
 
@@ -49,7 +52,7 @@ namespace BugTracker.Controllers
 
         public async Task<IActionResult> AllProjects(int companyId)
         {
-            companyId = (await _userManager.GetUserAsync(User)).CompanyId;
+            companyId = User.Identity!.GetCompanyId();
 
             List<Project> allProjects = await _projectService.GetAllProjectsByCompanyIdAsync(companyId);
 
@@ -97,7 +100,7 @@ namespace BugTracker.Controllers
 
                 //TODO: Make the companyId retrieval more efficient because the program is currently hitting the database everytime the program needs companyId. It is not efficient this way
 
-                project.CompanyId = (await _userManager.GetUserAsync(User)).CompanyId;
+                project.CompanyId = User.Identity!.GetCompanyId();
 
                 //Dates
                 project.CreatedDate = DataUtility.GetPostGresDate(DateTime.Now);
@@ -228,10 +231,11 @@ namespace BugTracker.Controllers
 
 
         // GET: ArchivedProjects
+        //TODO: maybe only authorize PM and admin to see archived projects in view. ask antonio
         public async Task<IActionResult> ArchivedProjects()
         {
 
-            int companyId = (await _userManager.GetUserAsync(User)).CompanyId;
+            int companyId = User.Identity!.GetCompanyId();
 
             List<Project> archivedProjects = await _projectService.GetArchivedProjectsByCompanyIdAsync(companyId);
 
@@ -287,7 +291,7 @@ namespace BugTracker.Controllers
 
             AssignPMViewModel model = new();
 
-            int companyId = (await _userManager.GetUserAsync(User)).CompanyId;
+            int companyId = User.Identity!.GetCompanyId();
 
             model.Project = await _projectService.GetProjectByIdAsync(id.Value);
 
@@ -318,7 +322,7 @@ namespace BugTracker.Controllers
 
 
 
-            int companyId = (await _userManager.GetUserAsync(User)).CompanyId;
+            int companyId = User.Identity!.GetCompanyId();
 
             model.Project = await _projectService.GetProjectByIdAsync(model.Project!.Id);
 
@@ -335,31 +339,51 @@ namespace BugTracker.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UnassignedProjects()
         {
-            int companyId = (await _userManager.GetUserAsync(User)).CompanyId;
+            int companyId = User.Identity!.GetCompanyId();
 
             List<Project> unassignedProjects = await _projectService.GetUnassignedProjectsAsync(companyId);
             return View(unassignedProjects);
         }
 
 
-        //Get: Add Team Members Page
+        //GET: Add Team Members Page
         [Authorize(Roles = "Admin, ProjectManager")]
-        public async Task<IActionResult> AddTeamMembers(int id, Company company)
+        public async Task<IActionResult> AddTeamMembers(int id, int companyId)
         {
-            if (id == null)
+            ProjectMembersViewModel viewModel = new();
+            companyId = User.Identity!.GetCompanyId();
+            viewModel.Project = await _projectService.GetProjectByIdAsync(id);
+
+            if (id <= 0)
             {
                 return NotFound();
             }
-            // get the project
-            // get the company
-            // get all members associated with the company
-            // add members to the list property of the project
 
+            List<string> currentMembers = viewModel.Project.Members!.Select(m => m.Id).ToList();
+            List<BTUser> devsAndSubs = await _projectService.GetDevsAndSubsAsync(id, companyId);
+            viewModel.CompanyMembers = new MultiSelectList(devsAndSubs, "Id", "FullName", currentMembers);
 
+            return View(viewModel);
+        }
 
-            int companyId = (await _userManager.GetUserAsync(User)).CompanyId;
-            Project project = await _projectService.GetProjectByIdAsync(id);
-            return View(project);
+        //POST: Save Team Members to Project
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddTeamMembers(ProjectMembersViewModel viewModel)
+        {
+            int companyId = User.Identity!.GetCompanyId();
+            viewModel.Project = await _projectService.GetProjectByIdAsync(viewModel.Project!.Id);
+
+            await _projectService.RemoveUsersButNotPMAsync(viewModel.Project!.Id);
+
+            foreach (string userId in viewModel.SelectedMembers)
+            {
+                BTUser? employee = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+                await _projectService.AddUserToProjectAsync(employee!, viewModel.Project!.Id)!;
+            }
+
+            return RedirectToAction(nameof(Index));
+
         }
 
 

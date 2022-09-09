@@ -59,7 +59,7 @@ namespace BugTracker.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Description,CreatedDate,FileDate,FileType,TicketId,UserId")] TicketAttachment ticketAttachment)
+        public async Task<IActionResult> Create([Bind("Id,Description,CreatedDate,FileData,FileType,TicketId,UserId")] TicketAttachment ticketAttachment)
         {
             if (ModelState.IsValid)
             {
@@ -95,7 +95,7 @@ namespace BugTracker.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Description,CreatedDate,FileDate,FileType,TicketId,UserId")] TicketAttachment ticketAttachment)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Description,CreatedDate,FileData,FileType,TicketId,UserId")] TicketAttachment ticketAttachment)
         {
             if (id != ticketAttachment.Id)
             {

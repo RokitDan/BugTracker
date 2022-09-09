@@ -1,6 +1,7 @@
 using BugTracker.Data;
 using BugTracker.Models;
 using BugTracker.Services;
+using BugTracker.Extensions;
 using BugTracker.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -20,6 +21,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddIdentity<BTUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddClaimsPrincipalFactory<BTUserClaimsPrincipalFactory>()
     .AddDefaultUI()
     .AddDefaultTokenProviders();
 
@@ -28,6 +30,7 @@ builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<IBTProjectService, BTProjectService>();
 builder.Services.AddScoped<IBTRolesService, BTRolesService>();
 builder.Services.AddScoped<IBTTicketService, BTTicketService>();
+builder.Services.AddScoped<IBTCompanyService, BTCompanyService>();
 
 
 //var host = builder.Build();

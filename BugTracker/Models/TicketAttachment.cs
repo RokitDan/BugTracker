@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BugTracker.Models
@@ -8,10 +9,16 @@ namespace BugTracker.Models
         public int Id { get; set; }
         public string? Description { get; set; }
         public DateTime CreatedDate { get; set; }
+
         [NotMapped]
-        public IFormFile? FormFile { get; set; }
-        public byte[]? FileDate { get; set; }
+        //[DisplayName("Select a file")]
+        //[DataType(DataType.Upload)]
+        //[MaxFileSize(1024 * 1024)]
+        //[AllowedExtensions(new string[] { ".jpg", ".png", ".doc", ".docx", ".xls", ".xlsx", ".pdf" })]
+        public IFormFile FormFile { get; set; }
+        public byte[]? FileData { get; set; }
         public string? FileType { get; set; }
+        public string FileName { get; set; }
 
         //foreign keys
         public int TicketId { get; set; }
@@ -19,7 +26,7 @@ namespace BugTracker.Models
         public string? UserId { get; set; }
 
         //navigation properties
-        public virtual Ticket? Ticket {get; set; }
+        public virtual Ticket? Ticket { get; set; }
         public virtual BTUser? User { get; set; }
 
 

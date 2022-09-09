@@ -54,19 +54,16 @@
                 <label asp-for="DeveloperUserId" class="control-label"></label>
                 <select asp-for="DeveloperUserId" class="form-control" asp-items="ViewBag.DeveloperUserId"></select>
             </div>
+   
             <div class="form-group">
-                <label asp-for="SubmitterUserId" class="control-label"></label>
-                <select asp-for="SubmitterUserId" class="form-control" asp-items="ViewBag.SubmitterUserId"></select>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Update" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Back to Curent Projects</a>
 </div>
 
 @section Scripts {

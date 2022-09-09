@@ -423,7 +423,7 @@ namespace BugTracker.Data.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
-                    b.Property<byte[]>("FileDate")
+                    b.Property<byte[]>("FileData")
                         .HasColumnType("bytea");
 
                     b.Property<string>("FileType")

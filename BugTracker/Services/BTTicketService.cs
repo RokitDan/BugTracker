@@ -27,16 +27,40 @@ namespace BugTracker.Services
             throw new NotImplementedException();
         }
 
-        //public async Task<bool> AssignDeveloperAsync(string userId, int ticketId)
-        //{
-        //    try
-        //    {
 
-        //    }
-        //    catch
-        //    {
-        //        throw;
-        //    }
-        //}
+
+        public async Task AddTicketAttachmentAsync(TicketAttachment ticketAttachment)
+        {
+            try
+            {
+                await _context.AddAsync(ticketAttachment);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<Ticket> GetTicketByIdAsync(int ticketId)
+        {
+            try
+            {
+                return await _context.Tickets
+                                        .Include(t => t.DeveloperUser)
+                                        .Include(t => t.Project)
+                                        .Include(t => t.SubmitterUser)
+                                        .Include(t => t.TicketPriority)
+                                        .Include(t => t.TicketStatus)
+                                        .Include(t => t.Attachments)
+                                        .Include(t => t.TicketType)
+                                        .FirstOrDefaultAsync(m => m.Id == ticketId);
+            }
+            catch
+            {
+                throw;
+            }
+        }
     }
 }
