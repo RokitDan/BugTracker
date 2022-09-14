@@ -13,10 +13,10 @@ namespace BugTracker.Models
         public bool? HasBeenViewed { get; set; }
 
         //foreign keys
-        public int TicketId { get; set; }
-        public int ProjectId { get; set; }
+        public int? TicketId { get; set; }
+        public int? ProjectId { get; set; }
         [Required]
-        public string? SenderId  { get; set; }
+        public string? SenderId { get; set; }
         [Required]
         public string? RecipientId { get; set; }
 

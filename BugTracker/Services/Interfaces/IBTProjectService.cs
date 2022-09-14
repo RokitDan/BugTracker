@@ -12,6 +12,8 @@ namespace BugTracker.Services.Interfaces
         public Task<List<Project>> GetArchivedProjectsByCompanyIdAsync(int companyId);
         public Task<List<Project>> GetCurrentProjectsByCompanyIdAsync(int companyId);
         public Task<List<BTUser>> GetDevsAndSubsAsync(int id, int companyId);
+        public Task<List<BTUser>> GetDevsAsync(int companyId);
+
         public Task<Project> GetProjectByIdAsync(int projectId);
         public Task<BTUser>? GetProjectManagerAsync(int projectId);
         public Task<List<Project>> GetUnassignedProjectsAsync(int companyId);
@@ -21,5 +23,6 @@ namespace BugTracker.Services.Interfaces
         public Task UpdateProjectAsync(Project project);
         public Task<bool> UserRemovedFromProjectAsync(BTUser user, int projectId);
         public Task<bool> RemoveUsersButNotPMAsync(int projectId);
+        public Task<List<BTUser>> GetProjectMembersbyRoleAsync(int projectId, string roleName);
     }
 }

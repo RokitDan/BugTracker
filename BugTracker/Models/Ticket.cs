@@ -22,6 +22,10 @@ namespace BugTracker.Models
         public DateTime CreatedDate { get; set; } //hidden in view
 
         [DataType(DataType.Date)]
+        [DisplayName("Created Date")]
+        public DateTime UpdatedDate { get; set; } //hidden in view
+
+        [DataType(DataType.Date)]
         [DisplayName("Start Date")]
         public DateTime StartDate { get; set; }
 

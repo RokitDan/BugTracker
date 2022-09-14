@@ -86,7 +86,14 @@
                     @Html.DisplayFor(modelItem => item.TicketType.Name)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.DeveloperUserId)
+                    @if (string.IsNullOrEmpty(item.DeveloperUserId))
+                    {
+                        <a asp-action="AssignDeveloper" asp-route-ticketId="@item.Id">Assign Developer</a>
+                    }
+                    else
+                    {
+                        @item.DeveloperUser!.FullName
+                    }
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.SubmitterUserId)

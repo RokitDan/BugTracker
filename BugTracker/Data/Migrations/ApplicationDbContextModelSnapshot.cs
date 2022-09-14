@@ -230,7 +230,7 @@ namespace BugTracker.Data.Migrations
                     b.Property<int?>("NotificationTypeId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("ProjectId")
+                    b.Property<int?>("ProjectId")
                         .HasColumnType("integer");
 
                     b.Property<string>("RecipientId")
@@ -241,7 +241,7 @@ namespace BugTracker.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("TicketId")
+                    b.Property<int?>("TicketId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Title")
@@ -391,6 +391,9 @@ namespace BugTracker.Data.Migrations
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
@@ -767,9 +770,7 @@ namespace BugTracker.Data.Migrations
 
                     b.HasOne("BugTracker.Models.Project", "Project")
                         .WithMany()
-                        .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProjectId");
 
                     b.HasOne("BugTracker.Models.BTUser", "Recipient")
                         .WithMany()
@@ -785,9 +786,7 @@ namespace BugTracker.Data.Migrations
 
                     b.HasOne("BugTracker.Models.Ticket", "Ticket")
                         .WithMany()
-                        .HasForeignKey("TicketId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("TicketId");
 
                     b.Navigation("NotificationType");
 

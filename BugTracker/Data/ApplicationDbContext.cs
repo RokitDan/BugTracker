@@ -23,7 +23,7 @@ namespace BugTracker.Data
         public virtual DbSet<TicketPriority> TicketPriorities { get; set; } = default!;
         public virtual DbSet<TicketStatus> TicketStatuses { get; set; } = default!;
         public virtual DbSet<TicketType> TicketTypes { get; set; } = default!;
-        public DbSet<TicketHistory>? TicketHistory { get; set; }
+        public virtual DbSet<TicketHistory>? TicketHistory { get; set; } = default!;
 
 
     }

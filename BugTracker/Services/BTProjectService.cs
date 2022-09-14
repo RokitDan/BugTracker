@@ -404,5 +404,55 @@ namespace BugTracker.Services
                 throw;
             }
         }
+
+        public async Task<List<BTUser>> GetDevsAsync(int companyId)
+        {
+            try
+            {
+                List<BTUser> devs = new();
+                List<BTUser> companyMembers = _context.Users.Where(u => u.CompanyId == companyId).ToList();
+
+                foreach (var user in companyMembers)
+                {
+                    if (await _rolesService.IsUserInRoleAsync(user, "Developer"))
+                    {
+                        devs.Add(user);
+                    }
+
+                }
+                return devs;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public async Task<List<BTUser>> GetProjectMembersbyRoleAsync(int projectId, string roleName)
+        {
+
+            try
+            {
+                Project? project = await _context.Projects.Include(p => p.Members).FirstOrDefaultAsync(p => p.Id == projectId);
+
+                List<BTUser> members = new();
+
+                foreach (BTUser user in project!.Members!)
+                {
+                    if (await _rolesService.IsUserInRoleAsync(user, roleName))
+                    {
+                        members.Add(user);
+                    }
+                }
+
+                return members;
+            }
+            catch
+            {
+                throw;
+            }
+        }
     }
+
+    
 }
