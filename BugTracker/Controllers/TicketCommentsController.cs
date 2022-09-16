@@ -7,16 +7,22 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BugTracker.Data;
 using BugTracker.Models;
+using BugTracker.Services.Interfaces;
+using Microsoft.AspNetCore.Identity;
 
 namespace BugTracker.Controllers
 {
     public class TicketCommentsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IBTTicketService _ticketService;
+        private readonly UserManager<BTUser> _userManager;
 
-        public TicketCommentsController(ApplicationDbContext context)
+        public TicketCommentsController(ApplicationDbContext context, IBTTicketService ticketService, UserManager<BTUser> userManager)
         {
             _context = context;
+            _ticketService = ticketService;
+            _userManager = userManager;
         }
 
         // GET: TicketComments
@@ -51,6 +57,11 @@ namespace BugTracker.Controllers
         {
             ViewData["TicketId"] = new SelectList(_context.Tickets, "Id", "Description");
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");
+            
+            //get ticket
+            //get user
+
+         
             return View();
         }
 
@@ -59,17 +70,20 @@ namespace BugTracker.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Comment,CreatedDate,TicketId,UserId")] TicketComment ticketComment)
+        public async Task<IActionResult> Create([Bind("Id,Comment,TicketId")] TicketComment ticketComment)
         {
+            ModelState.Remove("UserId");
+
             if (ModelState.IsValid)
             {
+                ticketComment.UserId = _userManager.GetUserId(User);
+                ticketComment.CreatedDate = DataUtility.GetPostGresDate(DateTime.Now);
+
                 _context.Add(ticketComment);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
             }
-            ViewData["TicketId"] = new SelectList(_context.Tickets, "Id", "Description", ticketComment.TicketId);
-            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", ticketComment.UserId);
-            return View(ticketComment);
+
+            return RedirectToAction("Details", "Tickets", new { id = ticketComment.TicketId });
         }
 
         // GET: TicketComments/Edit/5
@@ -161,14 +175,14 @@ namespace BugTracker.Controllers
             {
                 _context.TicketComments.Remove(ticketComment);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool TicketCommentExists(int id)
         {
-          return (_context.TicketComments?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.TicketComments?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

@@ -373,9 +373,6 @@ namespace BugTracker.Data.Migrations
                     b.Property<int>("ProjectId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<string>("SubmitterUserId")
                         .HasColumnType("text");
 

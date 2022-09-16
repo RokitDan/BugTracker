@@ -32,12 +32,7 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.CreatedDate)
         </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.StartDate)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.StartDate)
-        </dd>
+
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Archived)
         </dt>
@@ -78,13 +73,13 @@
             @Html.DisplayNameFor(model => model.DeveloperUser)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.DeveloperUser.Id)
+            @Html.DisplayFor(model => model.DeveloperUser.FullName)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.SubmitterUser)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.SubmitterUser.Id)
+            @Html.DisplayFor(model => model.SubmitterUser.FullName)
         </dd>
     </dl>
 </div>
@@ -111,6 +106,47 @@
                     </div>
                     <small>Size: @ImageService.FormatFileSize(item.FileData.Length) </small>
                 </div>
+            </div>
+        }
+    </div>
+</div>
+<h6>Comments</h6>
+<div>
+ <form asp-action="Create" asp-controller="TicketComments" enctype="multipart/form-data">
+                                        <input type="hidden" asp-for="Id" name="TicketId" />
+                                        <p class="comment-notes">
+                                            <div class="row row--10">
+                                                <div class="col-12">
+                                                    <div class="form-group">
+                                                        <label for="message">Leave a Reply</label>
+                                                        <textarea name="Comment"></textarea>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-12">
+                                                    <div class="form-submit">
+                                                        <input name="submit"
+                                                           type="submit"
+                                                           id="submit"
+                                                           class="axil-button button-rounded"
+                                                           value="Post Comment" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </p>
+ </form>
+</div>
+
+
+
+<div class="container">
+    <div class="row">
+        @foreach (TicketComment comment in Model.Comments!)
+        {
+            <div>
+                <p>@comment.User.</p>
+                <p>@comment.CreatedDate</p>
+                <p>@comment.Comment</p>
             </div>
         }
     </div>

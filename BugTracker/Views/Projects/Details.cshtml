@@ -115,21 +115,35 @@
             @Html.DisplayFor(model => model.ProjectPriority.Name)
         </dd>
     </dl>
-    @foreach (BTUser user in Model.Members)
-    {
-        <p>@user.FullName</p>
-    }
+
 
 </div>
 
 <div>
-    @if (Model.HasPM == true)
-    {
-        <h3>Project Manager</h3>
-        <span>@((await ProjectService.GetProjectManagerAsync(Model.Id)!)?.FullName)</span>
+    @{
+        BTUser? projectManager = await ProjectService.GetProjectManagerAsync(Model.Id)!;
+
+        if (projectManager != null)
+        {
+            <h3>Project Manager</h3>
+            <span>@projectManager.FullName</span>
+        }
+        else
+        {
+            <span><a asp-action="AssignProjectManager" asp-route-id="@Model.Id">Assign PM</a></span>
+        }
     }
+</div>
+<div>
+    <h3>Team Members</h3>
+    @foreach (BTUser user in Model.Members)
+    {
 
+        <p>@user.FullName</p>
+    }
+</div>
 
+<div>
     <h3>Tickets</h3>
     @foreach (Ticket ticket in Model.Tickets)
     {

@@ -25,10 +25,6 @@ namespace BugTracker.Models
         [DisplayName("Created Date")]
         public DateTime UpdatedDate { get; set; } //hidden in view
 
-        [DataType(DataType.Date)]
-        [DisplayName("Start Date")]
-        public DateTime StartDate { get; set; }
-
         public bool Archived { get; set; }//hidden in view
 
         [DisplayName("Archived By Project")]

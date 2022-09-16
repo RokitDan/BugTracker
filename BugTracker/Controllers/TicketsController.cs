@@ -411,7 +411,7 @@ namespace BugTracker.Controllers
                     ticketComment.UserId = _userManager.GetUserId(User);
                     ticketComment.CreatedDate = DateTime.UtcNow;
 
-                    await _ticketService.AddTicketcommentasync(ticketComment);
+                    await _ticketService.AddTicketCommentAsync(ticketComment);
 
                     await _ticketHistoryService.AddHistoryAsync(ticketComment.TicketId, nameof(TicketComment), ticketComment.UserId);
                 }

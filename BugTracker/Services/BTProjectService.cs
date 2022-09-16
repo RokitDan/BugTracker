@@ -130,7 +130,7 @@ namespace BugTracker.Services
 
                     foreach (Ticket ticket in project.Tickets)
                     {
-                        ticket.ArchivedByProject = true;
+                        ticket.ArchivedByProject = false;
                     }
                     await _context.SaveChangesAsync();
                 }
@@ -454,5 +454,5 @@ namespace BugTracker.Services
         }
     }
 
-    
+
 }

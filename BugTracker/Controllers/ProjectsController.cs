@@ -79,13 +79,15 @@ namespace BugTracker.Controllers
         }
 
         // GET: Projects/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            //TODO: Abstract the use of _context
-
-            ViewData["ProjectPriorityId"] = new SelectList(_context.ProjectPriorities, "Id", "Name");
-
-            return View();
+            CreateEditProjectViewModel viewModel = new()
+            {
+                Project = new Project(),
+                ProjectManagers = new SelectList(await _rolesService.GetUsersInRoleAsync("ProjectManager", User.Identity!.GetCompanyId()), "Id", "FullName"),
+                ProjectPriorityId = new SelectList(_context.ProjectPriorities, "Id", "Name")
+            };
+            return View(viewModel);
         }
 
         // POST: Projects/Create
@@ -93,36 +95,40 @@ namespace BugTracker.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,StartDate,EndDate,ImageFile,ProjectPriorityId")] Project project)
+        public async Task<IActionResult> Create(CreateEditProjectViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
 
-                //TODO: Make the companyId retrieval more efficient because the program is currently hitting the database everytime the program needs companyId. It is not efficient this way
-
-                project.CompanyId = User.Identity!.GetCompanyId();
+                viewModel.Project!.CompanyId = User.Identity!.GetCompanyId();
 
                 //Dates
-                project.CreatedDate = DataUtility.GetPostGresDate(DateTime.Now);
-                project.StartDate = DataUtility.GetPostGresDate(project.StartDate);
-                project.EndDate = DataUtility.GetPostGresDate(project.EndDate);
+                viewModel.Project!.CreatedDate = DataUtility.GetPostGresDate(DateTime.Now);
+                viewModel.Project!.StartDate = DataUtility.GetPostGresDate(viewModel.Project!.StartDate);
+                viewModel.Project!.EndDate = DataUtility.GetPostGresDate(viewModel.Project!.EndDate);
 
-                if (project.ImageFile != null)
+                if (viewModel.Project!.ImageFile != null)
                 {
-                    project.ImageData = await _imageService.ConvertFileToByteArrayAsync(project.ImageFile);
-                    project.ImageType = project.ImageFile.ContentType;
+                    viewModel.Project!.ImageData = await _imageService.ConvertFileToByteArrayAsync(viewModel.Project!.ImageFile);
+                    viewModel.Project!.ImageType = viewModel.Project!.ImageFile.ContentType;
                 }
 
-                await _projectService.AddProjectAsync(project);
+                if (!string.IsNullOrEmpty(viewModel.PMID))
+                {
+                    await _projectService.AddProjectManagerAsync(viewModel.PMID!, viewModel.Project.Id);
+                };
+
+                if (User.IsInRole(nameof(BTRoles.DemoUser)))
+                {
+                    await _projectService.AddProjectAsync(viewModel.Project!);
+                }
+
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewData["ProjectPriorityId"] = new SelectList(_context.ProjectPriorities, "Id", "Id", project.ProjectPriorityId);
+            ViewData["ProjectPriorityId"] = new SelectList(_context.ProjectPriorities, "Id", "Id", viewModel.Project!.ProjectPriorityId);
 
-
-
-
-            return View(project);
+            return View(viewModel);
         }
 
         [Authorize(Roles = "Admin, ProjectManager")]
@@ -135,6 +141,9 @@ namespace BugTracker.Controllers
             }
 
             var project = await _context.Projects.FindAsync(id);
+            project!.CreatedDate = DataUtility.GetPostGresDate(project.CreatedDate);
+            project!.StartDate = DataUtility.GetPostGresDate(project.StartDate);
+            project.EndDate = DataUtility.GetPostGresDate(project.EndDate);
 
             if (project == null)
             {
@@ -164,8 +173,8 @@ namespace BugTracker.Controllers
                 try
                 {
                     project.CreatedDate = DataUtility.GetPostGresDate(project.CreatedDate);
-                    project.StartDate = DataUtility.GetPostGresDate(project.StartDate);
-                    project.EndDate = DataUtility.GetPostGresDate(project.EndDate);
+                    //project.StartDate = DataUtility.GetPostGresDate(project.StartDate);
+                    //project.EndDate = DataUtility.GetPostGresDate(project.EndDate);
 
                     if (project.ImageFile != null)
                     {

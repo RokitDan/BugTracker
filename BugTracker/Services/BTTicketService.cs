@@ -10,42 +10,12 @@ namespace BugTracker.Services
     public class BTTicketService : IBTTicketService
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserManager<BTUser> _userManager;
-        private readonly IBTRolesService _rolesService;
-        private readonly IBTProjectService _projectService;
 
-        public BTTicketService(ApplicationDbContext context, UserManager<BTUser> userManager, IBTRolesService rolesService, IBTProjectService projectService)
+        public BTTicketService(ApplicationDbContext context)
         {
             _context = context;
-            _userManager = userManager;
-            _rolesService = rolesService;
-            _projectService = projectService;
+
         }
-
-        //public async Task<List<BTUser>> GetDevs (int companyId)
-        //{
-        //    List<BTUser> devs = new();
-        //    List<BTUser> companyMembers = _context.Users.Where(u => u.CompanyId == companyId).ToList();
-
-        //    foreach (var user in companyMembers)
-        //    {
-        //        if (await _rolesService.IsUserInRoleAsync(user, "Developer")))
-        //        {
-        //            devs.Add(user);
-        //        }
-
-        //    }
-        //    return devs;
-        //}
-
-        //public async Task<bool> AssignDeveloperAsync(string userId, int ticketId)
-        //{
-        //    await GetDevs(companyId)// get user with role of developer
-        //    // get the user's id
-        //    // assign the user's id as the ticket's DeveloperUserId property
-        //}
-
-
 
         public async Task AddTicketAttachmentAsync(TicketAttachment ticketAttachment)
         {
@@ -77,7 +47,7 @@ namespace BugTracker.Services
                                         .Include(t => t.TicketType)
                                         .FirstOrDefaultAsync(m => m.Id == ticketId);
 
-                return ticket;
+                return ticket!;
             }
             catch
             {
@@ -85,19 +55,49 @@ namespace BugTracker.Services
             }
         }
 
-        public Task AddNewTicketAsync(Ticket ticket)
+        public async Task AddNewTicketAsync(Ticket ticket)
         {
-            throw new NotImplementedException();
+            try
+            {
+                await _context.AddAsync(ticket);
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                throw;
+            }
         }
 
-        public Task AddTicketcommentasync(TicketComment ticketComment)
+        public async Task AddTicketCommentAsync(TicketComment ticketComment)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _context.Add(ticketComment);
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                throw;
+            }
         }
 
-        public Task ArchiveTicketAsync(Ticket ticket)
+        public ICollection<TicketComment> GetCommentsByTicketId(int ticketId)
         {
-            throw new NotImplementedException();
+            ICollection<TicketComment> comments = _context.TicketComments.Where(c => c.TicketId == ticketId).ToList();
+            return comments;
+        }
+
+        public async Task ArchiveTicketAsync(int ticketId)
+        {
+            try
+            {
+                Ticket ticket = await GetTicketByIdAsync(ticketId);
+                ticket.Archived = false;
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         public async Task AssignTicketAsync(int ticketId, string userId)
@@ -172,14 +172,31 @@ namespace BugTracker.Services
 
 
 
-        public Task RestoreTicketAsync(Ticket ticket)
+        public async Task RestoreTicketAsync(int ticketId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                Ticket ticket = await GetTicketByIdAsync(ticketId);
+                ticket.Archived = false;
+            }
+            catch
+            {
+                throw;
+            }
         }
 
-        public Task UpdateTicketAsync(Ticket ticket)
+        public async Task UpdateTicketAsync(Ticket ticket)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _context.Update(ticket);
+                await _context.SaveChangesAsync();
+
+            }
+            catch
+            {
+                throw;
+            }
         }
 
         public async Task<Ticket> GetTicketAsNoTrackingAsync(int ticketId, int companyId)
@@ -207,6 +224,16 @@ namespace BugTracker.Services
             {
                 throw;
             }
+        }
+
+        public Task ArchiveTicketAsync(Ticket ticket)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task RestoreTicketAsync(Ticket ticket)
+        {
+            throw new NotImplementedException();
         }
     }
 }
