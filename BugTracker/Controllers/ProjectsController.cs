@@ -113,15 +113,11 @@ namespace BugTracker.Controllers
                     viewModel.Project!.ImageType = viewModel.Project!.ImageFile.ContentType;
                 }
 
-                if (!string.IsNullOrEmpty(viewModel.PMID))
-                {
-                    await _projectService.AddProjectManagerAsync(viewModel.PMID!, viewModel.Project.Id);
-                };
-
-                if (User.IsInRole(nameof(BTRoles.DemoUser)))
-                {
-                    await _projectService.AddProjectAsync(viewModel.Project!);
-                }
+                //if (User.IsInRole(nameof(BTRoles.DemoUser)))
+                //{
+                await _projectService.AddProjectAsync(viewModel.Project!);
+                await _projectService.AddProjectManagerAsync(viewModel.PMID!, viewModel.Project);
+                //}
 
                 return RedirectToAction(nameof(Index));
             }
@@ -134,25 +130,36 @@ namespace BugTracker.Controllers
         [Authorize(Roles = "Admin, ProjectManager")]
         // GET: Projects/Edit/5
         public async Task<IActionResult> Edit(int? id)
+
         {
             if (id == null || _context.Projects == null)
             {
                 return NotFound();
             }
 
-            var project = await _context.Projects.FindAsync(id);
-            project!.CreatedDate = DataUtility.GetPostGresDate(project.CreatedDate);
-            project!.StartDate = DataUtility.GetPostGresDate(project.StartDate);
-            project.EndDate = DataUtility.GetPostGresDate(project.EndDate);
+            CreateEditProjectViewModel viewModel = new();
 
-            if (project == null)
+            viewModel.Project = await _projectService.GetProjectByIdAsync(id.Value);
+            viewModel.ProjectManagers = new SelectList(await _rolesService.GetUsersInRoleAsync("ProjectManager", User.Identity!.GetCompanyId()), "Id", "FullName");
+            viewModel.Project!.CreatedDate = DataUtility.GetPostGresDate(viewModel.Project.CreatedDate);
+            viewModel.Project!.StartDate = DataUtility.GetPostGresDate(viewModel.Project.StartDate);
+            viewModel.Project.EndDate = DataUtility.GetPostGresDate(viewModel.Project.EndDate);
+
+            List<BTUser> userList = await _projectService.GetProjectMembersbyRoleAsync(viewModel.Project.Members, nameof(BTRoles.ProjectManager));
+
+            if (userList.Count > 0)
+            {
+                viewModel.PMID = userList[0].Id;
+            }
+
+            if (viewModel.Project == null)
             {
                 return NotFound();
             }
 
-            ViewData["ProjectPriorityId"] = new SelectList(_context.ProjectPriorities, "Id", "Name", project.ProjectPriorityId);
+            ViewData["ProjectPriorityId"] = new SelectList(_context.ProjectPriorities, "Id", "Name", viewModel.Project.ProjectPriorityId);
 
-            return View(project);
+            return View(viewModel);
         }
 
         // POST: Projects/Edit/5
@@ -161,9 +168,9 @@ namespace BugTracker.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,CompanyId,Name,Description,CreatedDate,StartDate,EndDate,ImageData,ImageType,Archived,ImageFile,ProjectPriorityId")] Project project)
+        public async Task<IActionResult> Edit(CreateEditProjectViewModel viewModel, int id)
         {
-            if (id != project.Id)
+            if (id != viewModel.Project!.Id)
             {
                 return NotFound();
             }
@@ -172,21 +179,21 @@ namespace BugTracker.Controllers
             {
                 try
                 {
-                    project.CreatedDate = DataUtility.GetPostGresDate(project.CreatedDate);
-                    //project.StartDate = DataUtility.GetPostGresDate(project.StartDate);
-                    //project.EndDate = DataUtility.GetPostGresDate(project.EndDate);
+                    viewModel.Project!.CreatedDate = DataUtility.GetPostGresDate(viewModel.Project!.CreatedDate);
+                    viewModel.Project.StartDate = DataUtility.GetPostGresDate(viewModel.Project.StartDate);
+                    viewModel.Project.EndDate = DataUtility.GetPostGresDate(viewModel.Project.EndDate);
 
-                    if (project.ImageFile != null)
+                    if (viewModel.Project!.ImageFile != null)
                     {
-                        project.ImageData = await _imageService.ConvertFileToByteArrayAsync(project.ImageFile);
-                        project.ImageType = project.ImageFile.ContentType;
+                        viewModel.Project!.ImageData = await _imageService.ConvertFileToByteArrayAsync(viewModel.Project!.ImageFile);
+                        viewModel.Project!.ImageType = viewModel.Project!.ImageFile.ContentType;
                     }
 
-                    await _projectService.UpdateProjectAsync(project);
+                    await _projectService.UpdateProjectAsync(viewModel.Project!);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProjectExists(project.Id))
+                    if (!ProjectExists(viewModel.Project!.Id))
                     {
                         return NotFound();
                     }
@@ -198,10 +205,8 @@ namespace BugTracker.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-
-
-            ViewData["ProjectPriorityId"] = new SelectList(_context.ProjectPriorities, "Id", "Name", project.ProjectPriorityId);
-            return View(project);
+            ViewData["ProjectPriorityId"] = new SelectList(_context.ProjectPriorities, "Id", "Name", viewModel.Project!.ProjectPriorityId);
+            return View(viewModel);
         }
 
         // GET: Projects/Archive/5
@@ -310,8 +315,6 @@ namespace BugTracker.Controllers
             //Service call to RoleService
             model.PMList = new SelectList(await _rolesService.GetUsersInRoleAsync(nameof(BTRoles.ProjectManager), companyId), "Id", "FullName", currentPMID);
 
-
-
             return View(model);
         }
 
@@ -321,28 +324,18 @@ namespace BugTracker.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AssignProjectManager(AssignPMViewModel model)
         {
+            var project = await _projectService.GetProjectByIdAsync(model.Project!.Id);
+
             if (!string.IsNullOrEmpty(model.PMID))
             {
                 //Add PM to Project and TODO: enhance this process
-                await _projectService.AddProjectManagerAsync(model.PMID, model.Project!.Id);
+                await _projectService.AddProjectManagerAsync(model.PMID, project);
 
                 return RedirectToAction(nameof(Index));
             }
 
-
-
-            int companyId = User.Identity!.GetCompanyId();
-
-            model.Project = await _projectService.GetProjectByIdAsync(model.Project!.Id);
-
-            model.PMList = new SelectList(await _rolesService.GetUsersInRoleAsync(nameof(BTRoles.ProjectManager), companyId), "Id", "FullName");
-
-            string? currentPMID = (await _projectService.GetProjectManagerAsync(model.Project.Id))?.Id;
-
-
             return RedirectToAction(nameof(AssignProjectManager), new { id = model.Project!.Id });
         }
-
 
         //GET: Unassigned Projects
         [Authorize(Roles = "Admin")]

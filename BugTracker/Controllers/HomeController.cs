@@ -33,6 +33,11 @@ namespace BugTracker.Controllers
             _userManager = userManager;
         }
 
+        public async Task<IActionResult> Landing()
+        {
+            return View();
+        }
+
 
 
         public async Task<IActionResult> Index()

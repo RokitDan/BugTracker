@@ -178,24 +178,24 @@ namespace BugTracker.Services
             }
         }
 
-        public async Task<bool> AddProjectManagerAsync(string userId, int projectId)
+
+        public async Task<bool> AddProjectManagerAsync(string userId, Project project)
         {
             try
             {
-                BTUser? currentPM = await GetProjectManagerAsync(projectId)!;
+                BTUser? currentPM = await GetProjectManagerAsync(project.Id)!;
                 BTUser? selectedPM = await _context.Users.FindAsync(userId);
 
                 //Remove Current PM
                 if (currentPM != null)
                 {
-                    await RemoveProjectManagerAsync(projectId);
+                    await RemoveProjectManagerAsync(project.Id);
                 }
 
                 //Add new PM
                 try
                 {
-                    Project? project = await GetProjectByIdAsync(projectId);
-                    await AddUserToProjectAsync(selectedPM!, projectId);
+                    await AddUserToProjectAsync(selectedPM!, project);
 
                     if (await _rolesService.IsUserInRoleAsync(selectedPM, nameof(BTRoles.ProjectManager)))
                     {
@@ -270,14 +270,16 @@ namespace BugTracker.Services
 
         public async Task<bool> AddUserToProjectAsync(BTUser user, int projectId)
         {
+            Project project = await GetProjectByIdAsync(projectId);
+            return await AddUserToProjectAsync(user, project);
+        }
+
+        public async Task<bool> AddUserToProjectAsync(BTUser user, Project project)
+        {
             try
             {
-                Project? project = await GetProjectByIdAsync(projectId);
-
-                bool onProject = project.Members.Any(m => m.Id == user.Id);
-
                 //Check if BTUser in on project
-                if (!onProject)
+                if (!project.Members.Any(x => x.Id == user.Id))
                 {
                     project.Members.Add(user);
                     await _context.SaveChangesAsync();
@@ -285,7 +287,6 @@ namespace BugTracker.Services
                 }
 
                 return false;
-
             }
             catch (Exception)
             {
@@ -430,29 +431,33 @@ namespace BugTracker.Services
 
         public async Task<List<BTUser>> GetProjectMembersbyRoleAsync(int projectId, string roleName)
         {
-
             try
             {
                 Project? project = await _context.Projects.Include(p => p.Members).FirstOrDefaultAsync(p => p.Id == projectId);
 
                 List<BTUser> members = new();
 
-                foreach (BTUser user in project!.Members!)
-                {
-                    if (await _rolesService.IsUserInRoleAsync(user, roleName))
-                    {
-                        members.Add(user);
-                    }
-                }
-
-                return members;
+                return await GetProjectMembersbyRoleAsync(project.Members, roleName);
             }
             catch
             {
                 throw;
             }
         }
+
+        public async Task<List<BTUser>> GetProjectMembersbyRoleAsync(ICollection<BTUser> memberList, string roleName)
+        {
+            List<BTUser> userList = new();
+
+            foreach (BTUser member in memberList)
+            {
+                if (await _rolesService.IsUserInRoleAsync(member, roleName))
+                {
+                    userList.Add(member);
+                }
+            }
+
+            return userList;
+        }
     }
-
-
 }

@@ -129,7 +129,7 @@ namespace BugTracker.Services
                             TicketId = newTicket.Id,
                             PropertyName = "DeveloperUser",
                             OldValue = oldTicket.DeveloperUser?.FullName ?? "Not Assigned",
-                            NewValue = newTicket.DeveloperUser!.FullName,
+                            NewValue = newTicket.DeveloperUser?.FullName ?? "Not Assigned",
                             CreatedDate = DataUtility.GetPostGresDate(DateTime.Now),
                             UserId = userId,
                             Description = "Ticket's Assigned Developer has been Updated."

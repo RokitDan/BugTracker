@@ -90,7 +90,9 @@ namespace BugTracker.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Title,Description,ProjectId,TicketTypeId,TicketPriorityId,TicketStatusId,DeveloperUserId")] Ticket ticket)
         {
-            if (ModelState.IsValid && ticket.SubmitterUserId != null)
+            ModelState.Remove("SubmitterUserId");
+            
+            if (ModelState.IsValid)
             {
                 ticket.SubmitterUserId = _userManager.GetUserId(User);
                 int statusId = (await _context.TicketStatuses.FirstOrDefaultAsync(s => s.Name == nameof(BTTicketStatuses.New)))!.Id;
