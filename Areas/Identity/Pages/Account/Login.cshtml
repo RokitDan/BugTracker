@@ -46,12 +46,11 @@
 
 </head>
 <body>
-    <h1>@ViewData["Title"]</h1>
-    <section class="container">
-        <div class="row">
-            <div class="col-md-4">
+    <section class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-4">
                 <section>
-                    <form id="form1" class="form-horizontal">
+                    <form id="account" method="post" class="form-horizontal">
                         <section class="card">
                             <header class="card-header">
 
@@ -62,7 +61,7 @@
                                 <div class="form-group row pb-3">
                                     <label asp-for="Input.Email" class="col-sm-4 control-label text-sm-end pt-2">Email</label>
                                     <div class="col-sm-8">
-                                        <input asp-for="Input.Email" type="text" name="name" class="form-control" autocomplete="username" aria-required="true">
+                                        <input asp-for="Input.Email" type="email" class="form-control" autocomplete="username" aria-required="true">
                                         <span asp-validation-for="Input.Email" class="text-danger"></span>
 
                                     </div>
@@ -70,7 +69,7 @@
                                 <div class="form-group row">
                                     <label asp-for="Input.Password" class="col-sm-4 control-label text-sm-end pt-2">Password</label>
                                     <div class="col-sm-8">
-                                        <input asp-for="Input.Password" type="email" name="email" class="form-control" autocomplete="current-password" aria-required="true">
+                                        <input asp-for="Input.Password" type="password" class="form-control" autocomplete="current-password" aria-required="true">
                                         <span asp-validation-for="Input.Password" class="text-danger"></span>
 
                                     </div>
@@ -86,14 +85,29 @@
                             </div>
                             <footer class="card-footer text-center">
                                 <div>
-                                    <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
+                                    <button id="login-submit" type="submit" class="w-100 btn btn-primary my-2">Log in</button>
+                                </div>
+
+
+                                <div>
+                                    <button type="submit" style="width:inherit;height:min-content" class="w-100 btn btn-primary my-2" name="demoEmail" value="DemoAdminEmail">Demo Admin</button>
                                 </div>
                                 <div>
-                                    <button class="btn btn-primary btn-sm mt-2" id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</button>
-                                    <button class="btn btn-primary btn-sm mt-2" asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</button>
-                                    <button class="btn btn-primary btn-sm mt-2" id="resend-confirmation" asp-page="./ResendEmailConfirmation">Resend email confirmation</button>
+                                    <button type="submit" style="width:inherit;height:min-content" class="w-100 btn btn-primary my-2" name="demoEmail" value="DemoPMEmail">Demo PM</button>
                                 </div>
+                                <div>
+                                    <button type="submit" style="width:inherit;height:min-content" class="w-100 btn btn-primary my-2" name="demoEmail" value="DemoDevEmail">Demo Developer</button>
+                                </div>
+                                <div>
+                                    <button type="submit" style="width:inherit;height:min-content" class="w-100 btn btn-primary my-2" name="demoEmail" value="DemoSubEmail">Demo Submitter</button>
+                                </div>
+
                             </footer>
+                            <div class="text-center mt-2">
+                                <div><a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register</a></div>
+                                <div><a id="forgot-password" asp-page="./ForgotPassword">Forgot Password?</a></div>
+                                <div><a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Resend Email Confirmation</a></div>
+                            </div>
                         </section>
                     </form>
                 </section>
@@ -101,50 +115,44 @@
             </div>
         </div>
     </section>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to log in.</h3>
-            <hr />
-            @{
-                if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                {
-                    <div>
-                        <p>
-                            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">
-                                article
-                                about setting up this ASP.NET application to support logging in via external services
-                            </a>.
-                        </p>
-                    </div>
-                }
-                else
-                {
-                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                        <div>
-                            <p>
-                                @foreach (var provider in Model.ExternalLogins)
-                                {
-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-                                }
-                            </p>
-                        </div>
-                    </form>
-                }
-            }
-        </section>
+    @* <div class="col-md-6 col-md-offset-2">
+    <section>
+    <h3>Use another service to log in.</h3>
+    <hr />
+    @{
+    if ((Model.ExternalLogins?.Count ?? 0) == 0)
+    {
+    <div>
+    <p>
+    There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">
+    article
+    about setting up this ASP.NET application to support logging in via external services
+    </a>.
+    </p>
     </div>
+    }
+    else
+    {
+    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+    <div>
+    <p>
+    @foreach (var provider in Model.ExternalLogins)
+    {
+    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+    }
+    </p>
+    </div>
+    </form>
+    }
+    }
+    </section>
+    </div>*@
     </div>
 
     <div class="mb-1 text-center">
         <form class="" id="account" method="post">
             <div class="form-group">
                 <div class="row">
-                    <div class="col-12 btn-block">
-                        <button type="submit" style="width:inherit;height:min-content" class="btn btn-primary p-10 m-2" name="demoEmail" value="DemoAdminEmail">Demo Admin</button>
-                        <button type="submit" style="width:inherit;height:min-content" class="btn btn-primary p-10 m-2" name="demoEmail" value="DemoPMEmail">Demo PM</button>
-                        <button type="submit" style="width:inherit;height:min-content" class="btn btn-primary p-10 m-2" name="demoEmail" value="DemoDevEmail">Demo Developer</button>
-                        <button type="submit" style="width:inherit;height:min-content" class="btn btn-primary p-10 m-2" name="demoEmail" value="DemoSubEmail">Demo Submitter</button>
-                    </div>
                 </div>
             </div>
         </form>
