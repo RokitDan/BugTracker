@@ -1,17 +1,12 @@
 ﻿using BugTracker.Data;
 using BugTracker.Models;
-using BugTracker.Models.Enums;
 using BugTracker.Services.Interfaces;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using BugTracker.Extensions;
-using BugTracker.Data;
 
 namespace BugTracker.Services
 {
     public class BTCompanyService : IBTCompanyService
     {
-
         public readonly ApplicationDbContext _context;
 
         public BTCompanyService(ApplicationDbContext context)

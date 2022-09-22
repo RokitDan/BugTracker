@@ -1,7 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using BugTracker.Enums;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BugTracker.Models
 {
@@ -19,10 +16,5 @@ namespace BugTracker.Models
 
         [Required]
         public string? EmailMessage { get; set; } //Body of the email
-
-
-
-
-
     }
 }

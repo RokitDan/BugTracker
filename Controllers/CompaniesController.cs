@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BugTracker.Data;
+using BugTracker.Extensions;
+using BugTracker.Models;
+using BugTracker.Models.ViewModels;
+using BugTracker.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using BugTracker.Data;
-using BugTracker.Models;
-using BugTracker.Extensions;
-using BugTracker.Models.ViewModels;
-using BugTracker.Services.Interfaces;
 
 namespace BugTracker.Controllers
 {
@@ -29,7 +25,7 @@ namespace BugTracker.Controllers
         // GET: Companies
         //public async Task<IActionResult> Index()
         //{
-        //      return _context.Companies != null ? 
+        //      return _context.Companies != null ?
         //                  View(await _context.Companies.ToListAsync()) :
         //                  Problem("Entity set 'ApplicationDbContext.Companies'  is null.");
         //}
@@ -55,7 +51,6 @@ namespace BugTracker.Controllers
         //GET
         public async Task<IActionResult> ManageUserRoles()
         {
-
             List<ManageUserRolesViewModel> viewModels = new(); //1 add instance of a viewModel
             int companyId = User.Identity!.GetCompanyId(); //2 get companyId
             List<BTUser> companyMembers = await _companyService.GetCompanyMembersAsync(companyId); //3 Get all company users
@@ -89,21 +84,12 @@ namespace BugTracker.Controllers
             {
                 if (await _rolesService.RemoveUserFromRoles(user, currentRoles)) //5 remove roles that the user currently has
                 {
-                    await _rolesService.AddUserToRoleAsync(user, selectedRole); //6 add new role 
+                    await _rolesService.AddUserToRoleAsync(user, selectedRole); //6 add new role
                 }
             }
 
             return RedirectToAction(nameof(ManageUserRoles)); //7 navigate
-
-
-
-
         }
-
-
-
-
-
 
         // GET: Companies/Create
         //public IActionResult Create()

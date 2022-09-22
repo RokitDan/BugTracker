@@ -32,10 +32,12 @@ namespace BugTracker.Models
         [DataType(DataType.Date)]
         [DisplayName("End Date")]
         public DateTime EndDate { get; set; }
+
         public bool? HasPM { get; set; }
 
         //Propertires for storing image
         public byte[]? ImageData { get; set; }   //hidden in view
+
         public string? ImageType { get; set; }   //hidden in view
 
         //Property for passing file information from the form(html) to the post.
@@ -50,9 +52,9 @@ namespace BugTracker.Models
 
         // nav properties
         public virtual Company? Company { get; set; }
+
         public virtual ProjectPriority? ProjectPriority { get; set; }
         public virtual ICollection<BTUser>? Members { get; set; } = new HashSet<BTUser>();
         public virtual ICollection<Ticket> Tickets { get; set; } = new HashSet<Ticket>();
-
     }
 }

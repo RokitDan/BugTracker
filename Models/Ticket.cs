@@ -1,7 +1,5 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Net.Mail;
-using System.Xml.Linq;
 
 namespace BugTracker.Models
 {
@@ -32,16 +30,18 @@ namespace BugTracker.Models
 
         // foreign keys
         public int ProjectId { get; set; }
+
         public int TicketTypeId { get; set; }
         public int TicketStatusId { get; set; }
         public int TicketPriorityId { get; set; }
         public string? DeveloperUserId { get; set; }
+
         //[Required]
         public string? SubmitterUserId { get; set; }
 
-
         //nav properties?
         public virtual Project? Project { get; set; }
+
         public virtual TicketPriority? TicketPriority { get; set; }
         public virtual TicketStatus? TicketStatus { get; set; }
         public virtual TicketType? TicketType { get; set; }

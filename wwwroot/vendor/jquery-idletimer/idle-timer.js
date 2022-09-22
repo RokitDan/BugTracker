@@ -15,10 +15,9 @@
     MouseScrollEvent -> Firefox 3.5, Firefox Mobile 1.0
 */
 (function ($) {
-
     $.idleTimer = function (firstParam, elem) {
         var opts;
-        if ( typeof firstParam === "object" ) {
+        if (typeof firstParam === "object") {
             opts = firstParam;
             firstParam = null;
         } else if (typeof firstParam === "number") {
@@ -67,7 +66,7 @@
             handleEvent = function (e) {
                 var obj = $.data(elem, "idleTimerObj") || {};
 
-        // ignore writting to storage unless related to idleTimer
+                // ignore writting to storage unless related to idleTimer
                 if (e.type === "storage" && e.originalEvent.key !== obj.timerSyncId) {
                     return;
                 }
@@ -114,9 +113,9 @@
 
                 // sync lastActive
                 if (e.type !== "storage" && obj.timerSyncId) {
-                  if (typeof(localStorage) !== "undefined") {
-                    localStorage.setItem(obj.timerSyncId, obj.lastActive);
-                  }
+                    if (typeof (localStorage) !== "undefined") {
+                        localStorage.setItem(obj.timerSyncId, obj.lastActive);
+                    }
                 }
 
                 // set a new timeout
@@ -129,7 +128,6 @@
              * @static
              */
             reset = function () {
-
                 var obj = $.data(elem, "idleTimerObj") || {};
 
                 // reset settings
@@ -143,7 +141,6 @@
                 if (!obj.idle) {
                     obj.tId = setTimeout(toggleIdleState, obj.timeout);
                 }
-
             },
             /**
              * Store remaining time, stop timer
@@ -153,11 +150,10 @@
              * @static
              */
             pause = function () {
-
                 var obj = $.data(elem, "idleTimerObj") || {};
 
                 // this is already paused
-                if ( obj.remaining != null ) { return; }
+                if (obj.remaining != null) { return; }
 
                 // define how much is left on the timer
                 obj.remaining = obj.timeout - ((+new Date()) - obj.olddate);
@@ -172,14 +168,13 @@
              * @static
              */
             resume = function () {
-
                 var obj = $.data(elem, "idleTimerObj") || {};
 
                 // this isn't paused yet
-                if ( obj.remaining == null ) { return; }
+                if (obj.remaining == null) { return; }
 
                 // start timer
-                if ( !obj.idle ) {
+                if (!obj.idle) {
                     obj.tId = setTimeout(toggleIdleState, obj.remaining);
                 }
 
@@ -194,7 +189,6 @@
              * @static
              */
             destroy = function () {
-
                 var obj = $.data(elem, "idleTimerObj") || {};
 
                 //clear any pending timeouts
@@ -213,14 +207,13 @@
             * @static
             */
             remainingtime = function () {
-
                 var obj = $.data(elem, "idleTimerObj") || {};
 
                 //If idle there is no time remaining
-                if ( obj.idle ) { return 0; }
+                if (obj.idle) { return 0; }
 
                 //If its paused just return that
-                if ( obj.remaining != null ) { return obj.remaining; }
+                if (obj.remaining != null) { return obj.remaining; }
 
                 //Determine remaining, if negative idle didn't finish flipping, just return 0
                 var remaining = obj.timeout - ((+new Date()) - obj.lastActive);
@@ -229,7 +222,6 @@
                 //If this is paused return that number, else return current remaining
                 return remaining;
             };
-
 
         // determine which function to call
         if (firstParam === null && typeof obj.idle !== "undefined") {
@@ -264,9 +256,9 @@
             return obj.idle;
         }
 
-    // Test via a getter in the options object to see if the passive property is accessed
-    // This isnt working in jquery, though is planned for 4.0
-    // https://github.com/jquery/jquery/issues/2871
+        // Test via a getter in the options object to see if the passive property is accessed
+        // This isnt working in jquery, though is planned for 4.0
+        // https://github.com/jquery/jquery/issues/2871
         /*var supportsPassive = false;
         try {
             var Popts = Object.defineProperty({}, "passive", {
@@ -295,16 +287,16 @@
         // Internal Object Properties, This isn't all necessary, but we
         // explicitly define all keys here so we know what we are working with
         obj = $.extend({}, {
-            olddate : +new Date(),          // the last time state changed
+            olddate: +new Date(),          // the last time state changed
             lastActive: +new Date(),       // the last time timer was active
-            idle : opts.idle,               // current state
-            idleBackup : opts.idle,         // backup of idle parameter since it gets modified
-            timeout : opts.timeout,         // the interval to change state
-            remaining : null,               // how long until state changes
-            timerSyncId : opts.timerSyncId, // localStorage key to use for syncing this timer
-            tId : null,                     // the idle timer setTimeout
-            pageX : null,                   // used to store the mouse coord
-            pageY : null
+            idle: opts.idle,               // current state
+            idleBackup: opts.idle,         // backup of idle parameter since it gets modified
+            timeout: opts.timeout,         // the interval to change state
+            remaining: null,               // how long until state changes
+            timerSyncId: opts.timerSyncId, // localStorage key to use for syncing this timer
+            tId: null,                     // the idle timer setTimeout
+            pageX: null,                   // used to store the mouse coord
+            pageY: null
         });
 
         // set a timeout to toggle state. May wish to omit this in some situations
@@ -326,5 +318,4 @@
 
         return this;
     };
-
 })(jQuery);

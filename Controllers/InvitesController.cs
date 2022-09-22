@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BugTracker.Data;
+using BugTracker.Extensions;
+using BugTracker.Models;
+using BugTracker.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using BugTracker.Data;
-using BugTracker.Models;
-using BugTracker.Services;
-using BugTracker.Services.Interfaces;
-using BugTracker.Extensions;
-using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 
 namespace BugTracker.Controllers
 {
@@ -83,7 +78,6 @@ namespace BugTracker.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Message,InviteeEmail,InviteeFirstName,InviteeLastName,ProjectId")] Invite invite)
         {
-
             ModelState.Remove("InvitorId");
             int companyId = User.Identity!.GetCompanyId();
 
@@ -121,8 +115,6 @@ namespace BugTracker.Controllers
 
                     //TODO: Add invite service method
                     await _inviteService.AddNewInviteAsync(invite);
-
-
                 }
                 catch
                 {
@@ -264,9 +256,7 @@ namespace BugTracker.Controllers
             {
                 throw;
             }
-
         }
-
 
         private bool InviteExists(int id)
         {

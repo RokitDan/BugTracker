@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using BugTracker.Data;
+﻿using BugTracker.Data;
 using BugTracker.Models;
 using BugTracker.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace BugTracker.Controllers
 {
@@ -57,11 +53,10 @@ namespace BugTracker.Controllers
         {
             ViewData["TicketId"] = new SelectList(_context.Tickets, "Id", "Description");
             ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");
-            
+
             //get ticket
             //get user
 
-         
             return View();
         }
 
@@ -76,6 +71,7 @@ namespace BugTracker.Controllers
 
             if (ModelState.IsValid)
             {
+                ticketComment.User = await _userManager.GetUserAsync(User);
                 ticketComment.UserId = _userManager.GetUserId(User);
                 ticketComment.CreatedDate = DataUtility.GetPostGresDate(DateTime.Now);
 

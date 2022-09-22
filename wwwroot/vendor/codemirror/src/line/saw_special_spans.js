@@ -2,9 +2,9 @@
 export let sawReadOnlySpans = false, sawCollapsedSpans = false
 
 export function seeReadOnlySpans() {
-  sawReadOnlySpans = true
+    sawReadOnlySpans = true
 }
 
 export function seeCollapsedSpans() {
-  sawCollapsedSpans = true
+    sawCollapsedSpans = true
 }

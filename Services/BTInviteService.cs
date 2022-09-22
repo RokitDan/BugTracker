@@ -1,22 +1,19 @@
 ﻿using BugTracker.Data;
 using BugTracker.Models;
-using BugTracker.Models.Enums;
 using BugTracker.Services.Interfaces;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using BugTracker.Extensions;
 
 namespace BugTracker.Services
 {
     public class BTInviteService : IBTInviteService
     {
-
         private readonly ApplicationDbContext _context;
 
         public BTInviteService(ApplicationDbContext context)
         {
             _context = context;
         }
+
         public async Task<bool> AcceptInviteAsync(Guid? token, string userId, int companyId)
         {
             try
@@ -40,7 +37,6 @@ namespace BugTracker.Services
                 {
                     throw;
                 }
-
             }
             catch
             {
@@ -91,7 +87,6 @@ namespace BugTracker.Services
             {
                 throw;
             }
-
         }
 
         public async Task<Invite> GetInviteAsync(Guid token, string email, int companyId)
@@ -135,11 +130,8 @@ namespace BugTracker.Services
                     {
                         result = invite.IsValid;
                     }
-
                 }
                 return result;
-
-
             }
             catch
             {

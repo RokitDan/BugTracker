@@ -1,18 +1,14 @@
-﻿using BugTracker.Models;
+﻿using BugTracker.Data;
+using BugTracker.Extensions;
+using BugTracker.Models;
+using BugTracker.Models.ViewModels;
+using BugTracker.Services.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using BugTracker.Services.Interfaces;
-using BugTracker.Data;
-using BugTracker.Extensions;
-using BugTracker.Models.ViewModels;
-using Microsoft.AspNetCore.Identity;
-
 
 namespace BugTracker.Controllers
 {
-
-
-
     public class HomeController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -21,7 +17,6 @@ namespace BugTracker.Controllers
         private readonly IBTTicketService _ticketService;
         private readonly IBTProjectService _projectService;
         private readonly ILogger<HomeController> _logger;
-
 
         public HomeController(ApplicationDbContext context, UserManager<BTUser> userManager, IBTCompanyService companyService, IBTTicketService ticketService, IBTProjectService projectService, ILogger<HomeController> logger)
         {
@@ -37,8 +32,6 @@ namespace BugTracker.Controllers
         {
             return View();
         }
-
-
 
         public async Task<IActionResult> Index()
         {
@@ -100,7 +93,6 @@ namespace BugTracker.Controllers
                 };
 
                 return View(viewModel);
-
             }
             catch
             {

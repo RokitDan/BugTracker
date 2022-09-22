@@ -1,5 +1,7 @@
 ﻿@model BugTracker.Models.Ticket
 
+@using BugTracker.Extensions
+@using BugTracker.Models.Enums
 @using BugTracker.Services.Interfaces;
 
 @inject IImageService ImageService;
@@ -8,146 +10,205 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
 
-<div>
-    <h4>Ticket</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CreatedDate)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CreatedDate)
-        </dd>
+<a asp-action="Index"><i class="bi bi-arrow-left-circle"></i> Go to Current Tickets</a>
 
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Archived)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Archived)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ArchivedByProject)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.ArchivedByProject)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Project)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Project.Description)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.TicketPriority)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.TicketPriority.Id)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.TicketStatus)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.TicketStatus.Id)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.TicketType)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.TicketType.Id)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.DeveloperUser)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.DeveloperUser.FullName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.SubmitterUser)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.SubmitterUser.FullName)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
 
 <hr />
-<h6>Attachments</h6>
-<div class="container">
-    <div class="row">
-        @foreach (TicketAttachment item in Model.Attachments)
-        {
-            <div class="col col-sm-2">
-                <a asp-action="ShowFile" asp-controller="Tickets" asp-route-Id="@item.Id">
-                    <div class="icon">
-                        <img src="@ImageService.GetFileIcon(item.FileName)" style="height:50px;width:50px" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="@item.FileName" />
-                    </div>
-                </a>
-                <div style="font-size:x-small">
-                    <div class="file-name">
-                        <strong>@item.Description</strong>
-                    </div>
-                    <small>Size: @ImageService.FormatFileSize(item.FileData.Length) </small>
+
+
+
+
+
+<main class="container">
+
+    <section class="@(Model.TicketPriority.GetSectionPriority()) mb-3">
+        <header class="card-header px-3 py-2 row row-cols-2">
+            <div class="col">
+                @if (Model.TicketPriority.Name == nameof(BTTicketPriorities.Urgent))
+                {
+                    <div class="card-title"><i class="bi bi-exclamation-circle"></i><span class="mx-2">@Model.Title</span></div>
+                }
+                else
+                {
+                    <div class="card-title">@Model.Title</div>
+                }
+                <div class="card-subtitle ">Project: @Model.Project.Name</div>
+            </div>
+            <div class="col text-end text-light my-auto">
+                <a asp-action="Details" id="detailsIconLight" asp-route-id="@Model.Id"><i class="bi bi-card-list mx-1"></i></a>
+                <a asp-action="Edit" id="editIconLight" class="mx-3" asp-route-id="@Model.Id"><i class="bi bi-pencil-fill"></i></a>
+                @if (Model.Archived == true)
+                {
+                    <a asp-action="Restore" id="deleteIconLight" asp-route-id="@Model.Id">
+                        <i class="bi bi-box-arrow-up"></i>
+                    </a>
+                }
+                else
+                {
+                    <a asp-action="Archive" id="deleteIconLight" asp-route-id="@Model.Id"><i class="bi bi-archive-fill editIconsLight"></i></a>
+                }
+            </div>
+        </header>
+
+
+        <div class="card-body row">
+            <div class="row">
+                <div class="fw-bold">Description</div>
+                <p>@Model.Description</p>
+            </div>
+
+            <hr />
+            <div class="row row-cols-1 row-cols-md-4">
+                <div class="col">
+                    <div class="fw-bold">Priority</div>
+                    <div>@Model.TicketPriority.Name</div>
                 </div>
+                <div class="col">
+                    <div class="fw-bold">Created Date</div>
+                    <div>@Model.CreatedDate</div>
+                </div>
+                <div class="col">
+                    <div class="fw-bold">Submitter</div>
+                    <div>@Html.DisplayFor(modelItem => Model.SubmitterUser.FullName)</div>
+                </div>
+                <div class="col">
+                    <div class="fw-bold">Developer</div>
+                    @if (Model.DeveloperUser == null)
+                    {
+                        <div><a asp-action="AssignDeveloper" asp-controller="Tickets" asp-route-id="@Model.Id">Assign Developer</a></div>
+                    }
+                    else
+                    {
+                        <div>@Model.DeveloperUser.FullName</div>
+                    }
+
+                </div>
+
             </div>
-        }
-    </div>
-</div>
-<h6>Comments</h6>
-<div>
- <form asp-action="Create" asp-controller="TicketComments" enctype="multipart/form-data">
-                                        <input type="hidden" asp-for="Id" name="TicketId" />
-                                        <p class="comment-notes">
-                                            <div class="row row--10">
-                                                <div class="col-12">
-                                                    <div class="form-group">
-                                                        <label for="message">Leave a Reply</label>
-                                                        <textarea name="Comment"></textarea>
-                                                    </div>
-                                                </div>
+        </div>
 
-                                                <div class="col-lg-12">
-                                                    <div class="form-submit">
-                                                        <input name="submit"
-                                                           type="submit"
-                                                           id="submit"
-                                                           class="axil-button button-rounded"
-                                                           value="Post Comment" />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </p>
- </form>
-</div>
+        <div class="card-body row">
+            <div class="row row-cols-1 row-cols-md-4">
+                <div class="col">
+                    <div class="fw-bold">Status</div>
+                    <div>@Model.TicketStatus.Name</div>
+                </div>
+                <div class="col">
+                    <div class="fw-bold">Ticket Type</div>
+                    <div>@Model.TicketType.Name</div>
+                </div>
+                <div class="col">
+                    <div class="fw-bold">Archived?</div>
+                    @if (Model.Archived == true)
+                    {
+                        <span>Yes</span>
+                    }
+                    else if (Model.ArchivedByProject == true)
+                    {
+                        <span>Yes, by Project</span>
+                    }
+                    else
+                    {
+                        <span>No</span>
+                    }
 
+                </div>
 
-
-<div class="container">
-    <div class="row">
-        @foreach (TicketComment comment in Model.Comments!)
-        {
-            <div>
-                <p>@comment.User.</p>
-                <p>@comment.CreatedDate</p>
-                <p>@comment.Comment</p>
             </div>
-        }
-    </div>
-</div>
+        </div>
+
+    </section>
+
+    @if (Model.Attachments.Count != 0)
+    {
+
+        <h3>Attachments</h3>
+        <div>
+            <div class="row">
+                @foreach (TicketAttachment item in Model.Attachments)
+                {
+                    <div class="col col-sm-2">
+                        <a asp-action="ShowFile" asp-controller="Tickets" asp-route-Id="@item.Id">
+                            <div class="icon">
+                                <img src="@ImageService.GetFileIcon(item.FileName)" style="height:50px;width:50px" data-bs-toggle="tooltip" data-bs-placement="top" title="" data-bs-original-title="@item.FileName" />
+                            </div>
+                        </a>
+                        <div style="font-size:x-small">
+                            <div class="file-name">
+                                <strong>@item.Description</strong>
+                            </div>
+                            <small>Size: @ImageService.FormatFileSize(item.FileData.Length) </small>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+
+    <section class="row row-cols-lg-2">
+        <div class="col">
+            <h3>Comments</h3>
+
+            @foreach (TicketComment comment in Model.Comments!)
+            {
+                <div class="px-3 py-1">
+                    <div class="card-body row">
+                        <div class="row">
+                            <div class="row">
+                                <div class="fw-bold col"><span class="h6">Commenter's Name</span></div>
+                                <div class="col text-end">@comment.CreatedDate</div>
+                            </div>
+                            <hr />
+                            <div class="row">
+                                <p>@comment.Comment</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <form asp-action="Create" asp-controller="TicketComments" enctype="multipart/form-data">
+                <input type="hidden" asp-for="Id" name="TicketId" />
+                <p class="comment-notes">
+                    <div>
+                        <div>
+                            <textarea placeholder="Leave a Comment" name="Comment" rows="5"></textarea>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-submit">
+                                <input name="submit"
+                                       type="submit"
+                                       id="submit"
+                                       class="btn btn-primary"
+                                       value="Post Comment" />
+                            </div>
+                        </div>
+                    </div>
+                </p>
+            </form>
+        </div>
+
+        <div class="col">
+            <h3>Change Log</h3>
+            @foreach (TicketHistory history in Model.History)
+            {
+                <div class="px-3 py-1">
+                    <div class="row card-body">
+                        <div class="fw-bold col"><span class="h6">@history.Description</span></div>
+                        <div class="col text-end">@history.CreatedDate</div>
+                        <hr />
+                        <div class="row">
+                            <div class="col">
+                                <div>Previous: @history.OldValue</div>
+                                <div>New: @history.NewValue</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </section>
+</main>

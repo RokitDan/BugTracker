@@ -13,33 +13,29 @@ namespace BugTracker.Models
 
         [Required]
         public string? InviteeEmail { get; set; }
+
         [Required]
         public string? InviteeFirstName { get; set; }
+
         [Required]
         public string? InviteeLastName { get; set; }
 
         //foreign keys
         public int CompanyId { get; set; }
+
         public int ProjectId { get; set; }
+
         [Required]
         public string? InvitorId { get; set; }
-        public string? InviteeId { get; set; }
 
+        public string? InviteeId { get; set; }
 
         //nav properties
         public virtual Company? Company { get; set; }
+
         public virtual Project? Project { get; set; }
         public virtual BTUser? Invitor { get; set; }
 
         public virtual BTUser? Invitee { get; set; }
-
-
-
-
-
-
-
-
-
     }
 }

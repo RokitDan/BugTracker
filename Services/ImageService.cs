@@ -2,7 +2,6 @@
 
 namespace BugTracker.Services
 {
-
     //image service will also take care of other types of file attachments. Antonio has named his BTFileService
 
     public class ImageService : IImageService
@@ -11,7 +10,6 @@ namespace BugTracker.Services
         private readonly string _defaultCompanyImageSrc = "/img/DefaultCompanyImage.png";
         private readonly string _defaultBTUserImageSrc = "/img/DefaultBTUserImage.png";
         private readonly string[] suffixes = { "Bytes", "KB", "MB", "GB", "TB", "PB" };
-     
 
         //C:\Users\dlees\OneDrive\Documents\codeCF\vsRepos\BlogApp\BlogApp\wwwroot\img\DefaultContactImage.png
 
@@ -25,7 +23,6 @@ namespace BugTracker.Services
             {
                 switch (imageType)
                 {
-
                     case 1: return _defaultProjectImageSrc; //Project Image
                     case 2: return _defaultCompanyImageSrc; //Company Image
                     case 3: return _defaultBTUserImageSrc; //BTUser Image
@@ -42,8 +39,6 @@ namespace BugTracker.Services
             }
         }
 
-
-
         public async Task<byte[]> ConvertFileToByteArrayAsync(IFormFile file)
         {
             try
@@ -59,6 +54,7 @@ namespace BugTracker.Services
                 throw;
             }
         }
+
         public string GetFileIcon(string file)
         {
             string ext = Path.GetExtension(file).Replace(".", "");
@@ -76,6 +72,5 @@ namespace BugTracker.Services
             }
             return string.Format("{0:n1}{1}", number, suffixes[counter]);
         }
-
     }
 }

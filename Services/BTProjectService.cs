@@ -2,11 +2,7 @@
 using BugTracker.Models;
 using BugTracker.Models.Enums;
 using BugTracker.Services.Interfaces;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using BugTracker.Extensions;
-
-
 
 namespace BugTracker.Services
 {
@@ -72,7 +68,6 @@ namespace BugTracker.Services
                                               .Include(p => p.ProjectPriority)
                                               .Include(p => p.Members)
                                               .ToListAsync();
-
             }
             catch
             {
@@ -99,7 +94,6 @@ namespace BugTracker.Services
 
         public async Task<Project> GetProjectByIdAsync(int projectId)
         {
-
             try
             {
                 Project? project = await _context.Projects
@@ -114,7 +108,6 @@ namespace BugTracker.Services
             catch
             {
                 throw;
-
             }
         }
 
@@ -147,7 +140,6 @@ namespace BugTracker.Services
             {
                 _context.Update(project);
                 await _context.SaveChangesAsync();
-
             }
             catch
             {
@@ -170,14 +162,12 @@ namespace BugTracker.Services
                 }
 
                 return null!;
-
             }
             catch (Exception)
             {
                 throw;
             }
         }
-
 
         public async Task<bool> AddProjectManagerAsync(string userId, Project project)
         {
@@ -203,11 +193,9 @@ namespace BugTracker.Services
                         selectedPM.IsProjectManager = true;
                         project.HasPM = true;
                         await _context.SaveChangesAsync();
-
                     }
 
                     return true;
-
                 }
                 catch
                 {
@@ -235,7 +223,6 @@ namespace BugTracker.Services
                         project.HasPM = false;
                     }
                 }
-
             }
             catch
             {
@@ -260,7 +247,6 @@ namespace BugTracker.Services
                 }
 
                 return false;
-
             }
             catch (Exception)
             {
@@ -307,7 +293,6 @@ namespace BugTracker.Services
                 }
 
                 return false;
-
             }
             catch
             {
@@ -375,7 +360,6 @@ namespace BugTracker.Services
 
                 await _context.SaveChangesAsync();
                 return true;
-
             }
             catch (Exception)
             {
@@ -396,7 +380,6 @@ namespace BugTracker.Services
                     {
                         devsAndSubs.Add(user);
                     }
-
                 }
                 return devsAndSubs;
             }
@@ -419,7 +402,6 @@ namespace BugTracker.Services
                     {
                         devs.Add(user);
                     }
-
                 }
                 return devs;
             }

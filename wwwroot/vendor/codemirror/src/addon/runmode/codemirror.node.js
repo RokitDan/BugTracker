@@ -1,6 +1,6 @@
 import StringStream from "../../util/StringStream.js"
 import * as modeMethods from "../../modes.js"
-import {countColumn} from "../../util/misc.js"
+import { countColumn } from "../../util/misc.js"
 
 // Copy StringStream and mode methods into exports (CodeMirror) object.
 exports.StringStream = StringStream
@@ -12,10 +12,10 @@ require.cache[require.resolve("../../lib/codemirror")] = require.cache[require.r
 require.cache[require.resolve("../../addon/runmode/runmode")] = require.cache[require.resolve("./runmode.node")]
 
 // Minimal default mode.
-exports.defineMode("null", () => ({token: stream => stream.skipToEnd()}))
+exports.defineMode("null", () => ({ token: stream => stream.skipToEnd() }))
 exports.defineMIME("text/plain", "null")
 
 exports.registerHelper = exports.registerGlobalHelper = Math.min
-exports.splitLines = function(string) { return string.split(/\r?\n|\r/) }
+exports.splitLines = function (string) { return string.split(/\r?\n|\r/) }
 
 exports.defaults = { indentUnit: 2 }

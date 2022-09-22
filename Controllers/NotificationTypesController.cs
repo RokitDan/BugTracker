@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using BugTracker.Data;
+﻿using BugTracker.Data;
 using BugTracker.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BugTracker.Controllers
 {
@@ -22,9 +17,9 @@ namespace BugTracker.Controllers
         // GET: NotificationTypes
         public async Task<IActionResult> Index()
         {
-              return _context.NotificationTypes != null ? 
-                          View(await _context.NotificationTypes.ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.NotificationTypes'  is null.");
+            return _context.NotificationTypes != null ?
+                        View(await _context.NotificationTypes.ToListAsync()) :
+                        Problem("Entity set 'ApplicationDbContext.NotificationTypes'  is null.");
         }
 
         // GET: NotificationTypes/Details/5
@@ -150,14 +145,14 @@ namespace BugTracker.Controllers
             {
                 _context.NotificationTypes.Remove(notificationType);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool NotificationTypeExists(int id)
         {
-          return (_context.NotificationTypes?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.NotificationTypes?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

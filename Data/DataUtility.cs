@@ -30,7 +30,6 @@ namespace BugTracker.Data
         //    return $"DateTime({time.Ticks}, DateTimeKind.Utc)";
         //}
 
-
         public static string GetConnectionString(IConfiguration configuration)
         {
             var connectionString = configuration.GetConnectionString("DefaultConnection");
@@ -59,7 +58,6 @@ namespace BugTracker.Data
 
         public static async Task ManageDataAsync(IServiceProvider svcProvider)
         {
-
             //Service: An instance of RoleManager
             var dbContextSvc = svcProvider.GetRequiredService<ApplicationDbContext>();
             //Service: An instance of RoleManager
@@ -80,9 +78,7 @@ namespace BugTracker.Data
             await SeedDefaultProjectsAsync(dbContextSvc);
             await SeedDefaultTicketsAsync(dbContextSvc, userManagerSvc);
             await SeedDefaultNotificationTypesAsync(dbContextSvc);
-
         }
-
 
         public static async Task SeedRolesAsync(RoleManager<IdentityRole> roleManager)
         {
@@ -125,7 +121,6 @@ namespace BugTracker.Data
                 Console.WriteLine("***********************************");
                 throw;
             }
-
         }
 
         public static async Task SeedDefaultUsersAsync(UserManager<BTUser> userManager)
@@ -186,7 +181,6 @@ namespace BugTracker.Data
                 throw;
             }
 
-
             //Seed Default ProjectManager1 User
             defaultUser = new BTUser
             {
@@ -214,7 +208,6 @@ namespace BugTracker.Data
                 Console.WriteLine("***********************************");
                 throw;
             }
-
 
             //Seed Default ProjectManager2 User
             defaultUser = new BTUser
@@ -244,7 +237,6 @@ namespace BugTracker.Data
                 throw;
             }
 
-
             //Seed Default Developer1 User
             defaultUser = new BTUser
             {
@@ -272,7 +264,6 @@ namespace BugTracker.Data
                 Console.WriteLine("***********************************");
                 throw;
             }
-
 
             //Seed Default Developer2 User
             defaultUser = new BTUser
@@ -302,7 +293,6 @@ namespace BugTracker.Data
                 throw;
             }
 
-
             //Seed Default Developer3 User
             defaultUser = new BTUser
             {
@@ -331,7 +321,6 @@ namespace BugTracker.Data
                 throw;
             }
 
-
             //Seed Default Developer4 User
             defaultUser = new BTUser
             {
@@ -359,7 +348,6 @@ namespace BugTracker.Data
                 Console.WriteLine("***********************************");
                 throw;
             }
-
 
             //Seed Default Developer5 User
             defaultUser = new BTUser
@@ -445,7 +433,6 @@ namespace BugTracker.Data
                 throw;
             }
 
-
             //Seed Default Submitter2 User
             defaultUser = new BTUser
             {
@@ -473,7 +460,6 @@ namespace BugTracker.Data
                 Console.WriteLine("***********************************");
                 throw;
             }
-
         }
 
         public static async Task SeedDemoUsersAsync(UserManager<BTUser> userManager)
@@ -509,7 +495,6 @@ namespace BugTracker.Data
                 throw;
             }
 
-
             //Seed Demo ProjectManager User
             defaultUser = new BTUser
             {
@@ -538,7 +523,6 @@ namespace BugTracker.Data
                 Console.WriteLine("***********************************");
                 throw;
             }
-
 
             //Seed Demo Developer User
             defaultUser = new BTUser
@@ -569,7 +553,6 @@ namespace BugTracker.Data
                 throw;
             }
 
-
             //Seed Demo Submitter User
             defaultUser = new BTUser
             {
@@ -598,7 +581,6 @@ namespace BugTracker.Data
                 Console.WriteLine("***********************************");
                 throw;
             }
-
 
             //Seed Demo New User
             defaultUser = new BTUser
@@ -644,7 +626,6 @@ namespace BugTracker.Data
                 var dbProjectPriorities = context.ProjectPriorities.Select(c => c.Name).ToList();
                 await context.ProjectPriorities.AddRangeAsync(projectPriorities.Where(c => !dbProjectPriorities.Contains(c.Name)));
                 await context.SaveChangesAsync();
-
             }
             catch (Exception ex)
             {
@@ -658,7 +639,6 @@ namespace BugTracker.Data
 
         public static async Task SeedDefaultProjectsAsync(ApplicationDbContext context)
         {
-
             //Get project priority Ids
             int priorityLow = context.ProjectPriorities.FirstOrDefault(p => p.Name == nameof(BTProjectPriorities.Low))!.Id;
             int priorityMedium = context.ProjectPriorities.FirstOrDefault(p => p.Name == nameof(BTProjectPriorities.Medium))!.Id;
@@ -724,14 +704,12 @@ namespace BugTracker.Data
                 await context.Projects.AddRangeAsync(projects.Where(c => !dbProjects.Contains(c.Name)));
                 await context.SaveChangesAsync();
 
-
                 //Get company Ids
                 portfolioId = context.Projects.FirstOrDefault(p => p.Name == "Build a Personal Porfolio")!.Id;
                 blogId = context.Projects.FirstOrDefault(p => p.Name == "Build a supplemental Blog Web Application")!.Id;
                 bugtrackerId = context.Projects.FirstOrDefault(p => p.Name == "Build an Issue Tracking Web Application")!.Id;
                 movieId = context.Projects.FirstOrDefault(p => p.Name == "Build a Movie Information Web Application")!.Id;
                 addressbookId = context.Projects.FirstOrDefault(p => p.Name == "Build an Address Book Web Application")!.Id;
-
             }
             catch (Exception ex)
             {
@@ -756,8 +734,8 @@ namespace BugTracker.Data
             try
             {
                 IList<TicketType> ticketTypes = new List<TicketType>() {
-                     new TicketType() { Name = nameof(BTTicketTypes.NewDevelopment) },      // Ticket involves development of a new, uncoded solution 
-                     new TicketType() { Name = nameof(BTTicketTypes.WorkTask) },            // Ticket involves development of the specific ticket description 
+                     new TicketType() { Name = nameof(BTTicketTypes.NewDevelopment) },      // Ticket involves development of a new, uncoded solution
+                     new TicketType() { Name = nameof(BTTicketTypes.WorkTask) },            // Ticket involves development of the specific ticket description
                      new TicketType() { Name = nameof(BTTicketTypes.Defect)},               // Ticket involves unexpected development/maintenance on a previously designed feature/functionality
                      new TicketType() { Name = nameof(BTTicketTypes.ChangeRequest) },       // Ticket involves modification development of a previously designed feature/functionality
                      new TicketType() { Name = nameof(BTTicketTypes.Enhancement) },         // Ticket involves additional development on a previously designed feature or new functionality
@@ -767,7 +745,6 @@ namespace BugTracker.Data
                 var dbTicketTypes = context.TicketTypes.Select(c => c.Name).ToList();
                 await context.TicketTypes.AddRangeAsync(ticketTypes.Where(c => !dbTicketTypes.Contains(c.Name)));
                 await context.SaveChangesAsync();
-
             }
             catch (Exception ex)
             {
@@ -785,7 +762,7 @@ namespace BugTracker.Data
             {
                 IList<TicketStatus> ticketStatuses = new List<TicketStatus>() {
                     new TicketStatus() { Name = nameof(BTTicketStatuses.New) },                 // Newly CreatedDate ticket having never been assigned
-                    new TicketStatus() { Name = nameof(BTTicketStatuses.Development) },         // Ticket is assigned and currently being worked 
+                    new TicketStatus() { Name = nameof(BTTicketStatuses.Development) },         // Ticket is assigned and currently being worked
                     new TicketStatus() { Name = nameof(BTTicketStatuses.Testing)  },            // Ticket is assigned and is currently being tested
                     new TicketStatus() { Name = nameof(BTTicketStatuses.Resolved)  },           // Ticket remains assigned to the developer but work in now complete
                 };
@@ -793,7 +770,6 @@ namespace BugTracker.Data
                 var dbTicketStatuses = context.TicketStatuses.Select(c => c.Name).ToList();
                 await context.TicketStatuses.AddRangeAsync(ticketStatuses.Where(c => !dbTicketStatuses.Contains(c.Name)));
                 await context.SaveChangesAsync();
-
             }
             catch (Exception ex)
             {
@@ -819,7 +795,6 @@ namespace BugTracker.Data
                 var dbTicketPriorities = context.TicketPriorities.Select(c => c.Name).ToList();
                 await context.TicketPriorities.AddRangeAsync(ticketPriorities.Where(c => !dbTicketPriorities.Contains(c.Name)));
                 context.SaveChanges();
-
             }
             catch (Exception ex)
             {
@@ -833,7 +808,6 @@ namespace BugTracker.Data
 
         public static async Task SeedDefaultTicketsAsync(ApplicationDbContext context, UserManager<BTUser> userManager)
         {
-
             //Get ticket type Ids
             int typeNewDev = context.TicketTypes.FirstOrDefault(p => p.Name == nameof(BTTicketTypes.NewDevelopment))!.Id;
             int typeWorkTask = context.TicketTypes.FirstOrDefault(p => p.Name == nameof(BTTicketTypes.WorkTask))!.Id;
@@ -856,8 +830,6 @@ namespace BugTracker.Data
             //Get admin Ids
             string company1AdminId = (await userManager.FindByEmailAsync("btadmin1@bugtracker.com"))!.Id;
             string company2AdminId = (await userManager.FindByEmailAsync("btadmin2@bugtracker.com"))!.Id;
-
-
 
             try
             {
@@ -889,7 +861,7 @@ namespace BugTracker.Data
                                 new Ticket() {SubmitterUserId = company2AdminId, Title = "Blog Ticket 15", Description = "Ticket details for blog ticket 15", CreatedDate = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc), ProjectId = blogId, TicketPriorityId = priorityHigh, TicketStatusId = statusNew,  TicketTypeId = typeChangeRequest},
                                 new Ticket() {SubmitterUserId = company2AdminId, Title = "Blog Ticket 16", Description = "Ticket details for blog ticket 16", CreatedDate = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc), ProjectId = blogId, TicketPriorityId = priorityUrgent, TicketStatusId = statusNew, TicketTypeId = typeNewDev},
                                 new Ticket() {SubmitterUserId = company2AdminId, Title = "Blog Ticket 17", Description = "Ticket details for blog ticket 17", CreatedDate = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc), ProjectId = blogId, TicketPriorityId = priorityHigh, TicketStatusId = statusDev,  TicketTypeId = typeNewDev},
-                                //BUGTRACKER                                                                                                                         
+                                //BUGTRACKER
                                 new Ticket() {SubmitterUserId=company1AdminId, Title = "Bug Tracker Ticket 1", Description = "Ticket details for bug tracker ticket 1", CreatedDate = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc), ProjectId = bugtrackerId, TicketPriorityId = priorityHigh, TicketStatusId = statusNew, TicketTypeId = typeNewDev},
                                 new Ticket() {SubmitterUserId=company1AdminId, Title = "Bug Tracker Ticket 2", Description = "Ticket details for bug tracker ticket 2", CreatedDate = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc), ProjectId = bugtrackerId, TicketPriorityId = priorityHigh, TicketStatusId = statusNew, TicketTypeId = typeNewDev},
                                 new Ticket() {SubmitterUserId=company1AdminId, Title = "Bug Tracker Ticket 3", Description = "Ticket details for bug tracker ticket 3", CreatedDate = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc), ProjectId = bugtrackerId, TicketPriorityId = priorityHigh, TicketStatusId = statusNew, TicketTypeId = typeNewDev},
@@ -950,10 +922,7 @@ namespace BugTracker.Data
                                 new Ticket() {SubmitterUserId=company2AdminId, Title = "AddressBook Ticket 6", Description = "Ticket details for addressbook ticket 6", CreatedDate = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc), ProjectId = addressbookId, TicketPriorityId = priorityMedium, TicketStatusId = statusNew, TicketTypeId = typeChangeRequest},
                                 new Ticket() {SubmitterUserId=company2AdminId, Title = "AddressBook Ticket 7", Description = "Ticket details for addressbook ticket 7", CreatedDate = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc), ProjectId = addressbookId, TicketPriorityId = priorityHigh, TicketStatusId = statusDev, TicketTypeId = typeEnhancement},
                                 new Ticket() {SubmitterUserId=company2AdminId, Title = "AddressBook Ticket 8", Description = "Ticket details for addressbook ticket 8", CreatedDate = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc), ProjectId = addressbookId, TicketPriorityId = priorityUrgent, TicketStatusId = statusTest, TicketTypeId = typeDefect},
-
-
                 };
-
 
                 var dbTickets = context.Tickets.Select(c => c.Title).ToList();
                 await context.Tickets.AddRangeAsync(tickets.Where(c => !dbTickets.Contains(c.Title)));
@@ -981,7 +950,6 @@ namespace BugTracker.Data
                 var dbNotificationTypes = context.NotificationTypes.Select(c => c.Name).ToList();
                 await context.NotificationTypes.AddRangeAsync(notificationTypes.Where(c => !dbNotificationTypes.Contains(c.Name)));
                 await context.SaveChangesAsync();
-
             }
             catch (Exception ex)
             {

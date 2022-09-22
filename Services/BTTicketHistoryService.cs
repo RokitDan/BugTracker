@@ -6,17 +6,19 @@ namespace BugTracker.Services
 {
     public class BTTicketHistoryService : IBTTicketHistoryService
     {
-
         private readonly ApplicationDbContext _context;
 
         #region Constructor
+
         public BTTicketHistoryService(ApplicationDbContext context)
         {
             _context = context;
         }
-        #endregion
+
+        #endregion Constructor
 
         #region Add Ticket History (old Ticket, new Ticket, string userId)
+
         public async Task AddHistoryAsync(Ticket oldTicket, Ticket newTicket, string userId)
         {
             try
@@ -42,7 +44,6 @@ namespace BugTracker.Services
                     {
                         throw;
                     }
-
                 }
                 else
                 {
@@ -59,7 +60,6 @@ namespace BugTracker.Services
                             Description = "Ticket's Title has been Updated."
                         };
                         await _context.AddAsync(ticketHistory);
-
                     }
 
                     if (oldTicket.Description != newTicket.Description)
@@ -145,9 +145,11 @@ namespace BugTracker.Services
                 throw;
             }
         }
-        #endregion
+
+        #endregion Add Ticket History (old Ticket, new Ticket, string userId)
 
         #region Add Ticket history (int ticketId, string model, string userId)
+
         public async Task AddHistoryAsync(int ticketId, string model, string userId)
         {
             try
@@ -156,7 +158,6 @@ namespace BugTracker.Services
 
                 string description = model.ToLower().Replace("ticket", "");
                 description = $"{ticket!.Title}: New {description} added. ";
-
 
                 TicketHistory ticketHistory = new()
                 {
@@ -176,30 +177,32 @@ namespace BugTracker.Services
                 catch
                 {
                     throw;
-
-
                 }
-
             }
             catch
             {
                 throw;
             }
         }
-        #endregion
+
+        #endregion Add Ticket history (int ticketId, string model, string userId)
 
         #region Get company Ticket history (int projectId, int companyId)
+
         public Task<List<TicketHistory>> GetCompanyTicketsHistoriesAsync(int projectId, int companyId)
         {
             throw new NotImplementedException();
         }
-        #endregion
+
+        #endregion Get company Ticket history (int projectId, int companyId)
 
         #region Get Project Ticket History (int projectId, int companyId)
+
         public Task<List<TicketHistory>> GetProjectTicketsHistoriesAsync(int projectId, int companyId)
         {
             throw new NotImplementedException();
         }
-        #endregion
+
+        #endregion Get Project Ticket History (int projectId, int companyId)
     }
 }

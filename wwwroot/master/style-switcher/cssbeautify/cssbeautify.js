@@ -27,11 +27,9 @@
 /*global exports:true, module:true, window:true */
 
 (function () {
-
     'use strict';
 
     function cssbeautify(style, opt) {
-
         var options, index = 0, length = style.length, blocks, formatted = '',
             ch, ch2, str, state, State, depth, quote, comment,
             openbracesuffix = true,
@@ -181,7 +179,6 @@
             }
 
             if (state === State.Start) {
-
                 if (blocks.length === 0) {
                     if (isWhitespace(ch) && formatted.length === 0) {
                         continue;
@@ -197,7 +194,6 @@
 
                 // Selector or at-rule
                 if (isName(ch) || (ch === '@')) {
-
                     // Clear trailing whitespaces and linefeeds.
                     str = trimRight(formatted);
 
@@ -212,8 +208,7 @@
                         // After finishing a ruleset or directive statement,
                         // there should be one blank line.
                         if (str.charAt(str.length - 1) === '}' ||
-                                str.charAt(str.length - 1) === ';') {
-
+                            str.charAt(str.length - 1) === ';') {
                             formatted = str + '\n\n';
                         } else {
                             // After block comment, keep all the linefeeds but
@@ -234,7 +229,6 @@
             }
 
             if (state === State.AtRule) {
-
                 // ';' terminates a statement.
                 if (ch === ';') {
                     formatted += ch;
@@ -254,10 +248,8 @@
             }
 
             if (state === State.Block) {
-
                 // Selector
                 if (isName(ch)) {
-
                     // Clear trailing whitespaces and linefeeds.
                     str = trimRight(formatted);
 
@@ -303,7 +295,6 @@
             }
 
             if (state === State.Selector) {
-
                 // '{' starts the ruleset.
                 if (ch === '{') {
                     openBlock();
@@ -323,7 +314,6 @@
             }
 
             if (state === State.Ruleset) {
-
                 // '}' finishes the ruleset.
                 if (ch === '}') {
                     closeBlock();
@@ -355,7 +345,6 @@
             }
 
             if (state === State.Property) {
-
                 // ':' concludes the property.
                 if (ch === ':') {
                     formatted = trimRight(formatted);
@@ -382,7 +371,6 @@
             }
 
             if (state === State.Separator) {
-
                 // Non-whitespace starts the expression.
                 if (!isWhitespace(ch)) {
                     formatted += ch;
@@ -399,7 +387,6 @@
             }
 
             if (state === State.Expression) {
-
                 // '}' finishes the ruleset.
                 if (ch === '}') {
                     closeBlock();
@@ -422,9 +409,8 @@
 
                 if (ch === '(') {
                     if (formatted.charAt(formatted.length - 2) === 'l' &&
-                            formatted.charAt(formatted.length - 3) === 'r' &&
-                            formatted.charAt(formatted.length - 4) === 'u') {
-
+                        formatted.charAt(formatted.length - 3) === 'r' &&
+                        formatted.charAt(formatted.length - 4) === 'u') {
                         // URL starts with '(' and closes with ')'.
                         state = State.URL;
                         continue;
@@ -435,8 +421,6 @@
             }
 
             if (state === State.URL) {
-
-
                 // ')' finishes the URL (only if it is not escaped).
                 if (ch === ')' && formatted.charAt(formatted.length - 1 !== '\\')) {
                     formatted += ch;
@@ -462,5 +446,4 @@
         // Browser loading.
         window.cssbeautify = cssbeautify;
     }
-
 }());

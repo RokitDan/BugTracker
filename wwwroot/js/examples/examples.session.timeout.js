@@ -4,103 +4,99 @@ Written by: 	Okler Themes - (http://www.okler.net)
 Theme Version: 	4.0.0
 */
 
-(function($) {
+(function ($) {
+    'use strict';
 
-	'use strict';
+    var SessionTimeout = {
+        options: {
+            keepAliveUrl: '',
+            alertOn: 15000, // ms
+            timeoutOn: 20000 // ms
+        },
 
-	var SessionTimeout = {
+        alertTimer: null,
+        timeoutTimer: null,
 
-		options: {
-			keepAliveUrl: '',
-			alertOn: 15000, // ms
-			timeoutOn: 20000 // ms
-		},
+        initialize: function () {
+            this
+                .start()
+                .setup();
+        },
 
-		alertTimer: null,
-		timeoutTimer: null,
+        start: function () {
+            var _self = this;
 
-		initialize: function() {
-			this
-				.start()
-				.setup();
-		},
+            this.alertTimer = setTimeout(function () {
+                _self.onAlert();
+            }, this.options.alertOn);
 
-		start: function() {
-			var _self = this;
+            this.timeoutTimer = setTimeout(function () {
+                _self.onTimeout();
+            }, this.options.timeoutOn);
 
-			this.alertTimer = setTimeout(function() {
-				_self.onAlert();
-			}, this.options.alertOn );
+            return this;
+        },
 
-			this.timeoutTimer = setTimeout(function() {
-				_self.onTimeout();
-			}, this.options.timeoutOn );
+        // bind success callback for all ajax requests
+        setup: function () {
+            var _self = this;
 
-			return this;
-		},
+            // if server returns successfuly,
+            // then the session is renewed.
+            // thats why we reset here the counter
+            $(document).ajaxSuccess(function () {
+                _self.reset();
+            });
 
-		// bind success callback for all ajax requests
-		setup: function() {
-			var _self = this;
+            return this;
+        },
 
-			// if server returns successfuly,
-			// then the session is renewed.
-			// thats why we reset here the counter
-			$( document ).ajaxSuccess(function() {
-				_self.reset();
-			});
+        reset: function () {
+            clearTimeout(this.alertTimer);
+            clearTimeout(this.timeoutTimer);
+            this.start();
 
-			return this;
-		},
+            return this;
+        },
 
-		reset: function() {
-			clearTimeout(this.alertTimer);
-			clearTimeout(this.timeoutTimer);
-			this.start();
+        keepAlive: function () {
+            // we don't have session on demo,
+            // so the code above prevent a request to be made
+            // in your project, please remove the next 3 lines of code
+            if (!this.options.keepAliveUrl) {
+                this.reset();
+                return;
+            }
 
-			return this;
-		},
+            var _self = this;
 
-		keepAlive: function() {
-			// we don't have session on demo,
-			// so the code above prevent a request to be made
-			// in your project, please remove the next 3 lines of code
-			if ( !this.options.keepAliveUrl ) {
-				this.reset();
-				return;
-			}
+            $.post(this.options.keepAliveUrl, function (data) {
+                _self.reset();
+            });
+        },
 
-			var _self = this;
+        // ------------------------------------------------------------------------
+        // CUSTOMIZE HERE
+        // ------------------------------------------------------------------------
+        onAlert: function () {
+            // if you want to show some warning
+            // TODO: remove this confirm (it breaks the logic and it's ugly)
+            var renew = confirm('Your session is about to expire, do you want to renew?');
 
-			$.post( this.options.keepAliveUrl, function( data ) {
-				_self.reset();
-			});
-		},
+            if (renew) {
+                this.keepAlive();
+            }
 
-		// ------------------------------------------------------------------------
-		// CUSTOMIZE HERE
-		// ------------------------------------------------------------------------
-		onAlert: function() {
-			// if you want to show some warning
-			// TODO: remove this confirm (it breaks the logic and it's ugly)
-			var renew = confirm( 'Your session is about to expire, do you want to renew?' );
+            // if you want session to not expire
+            // this.keepAlive();
+        },
 
-			if ( renew ) {
-				this.keepAlive();
-			}
+        onTimeout: function () {
+            self.location.href = 'pages-signin.html';
+        }
+    };
 
-			// if you want session to not expire
-			// this.keepAlive();
-		},
-
-		onTimeout: function() {
-			self.location.href = 'pages-signin.html';
-		}
-
-	};
-
-	$(function() {
-		SessionTimeout.initialize();
-	});
-
+    $(function () {
+        SessionTimeout.initialize();
+    });
 }).apply(this, [jQuery]);

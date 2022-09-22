@@ -12,11 +12,11 @@
     "simple-line",
     "icon"
   ],
-    "main": [
-        "dist/styles/simple-line-icons.css",
-        "dist/styles/simple-line-icons.scss",
-        "dist/styles/simple-line-icons.less"
-    ],
+  "main": [
+    "dist/styles/simple-line-icons.css",
+    "dist/styles/simple-line-icons.scss",
+    "dist/styles/simple-line-icons.less"
+  ],
   "license": "MIT",
   "homepage": "https://github.com/thesabbir/simple-line-icons",
   "ignore": [

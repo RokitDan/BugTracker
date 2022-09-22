@@ -17,6 +17,7 @@ namespace BugTracker.Models
 
         //foreign keys
         public int TicketId { get; set; }
+
         [Required]
         public string? UserId { get; set; }
 
@@ -26,7 +27,5 @@ namespace BugTracker.Models
 
         [DisplayName("Team Member")]
         public virtual BTUser? User { get; set; }
-
-
     }
 }

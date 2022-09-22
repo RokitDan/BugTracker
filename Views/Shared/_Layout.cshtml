@@ -4,7 +4,7 @@
 @inject SignInManager<BTUser> SignInManager
 @inject IBTRolesService rolesService
 @inject IImageService imageService
-
+@inject UserManager<BTUser> userManager
 
 <!doctype html>
 <html class="fixed">
@@ -58,31 +58,8 @@
     <!-- Head Libs -->
     <script src="~/vendor/modernizr/modernizr.js"></script>
 
-    <!--EXTRA-->
-    @* <!-- Vendor CSS -->
-    <link rel="stylesheet" href="~/vendor/bootstrap/css/bootstrap.css" />
-    <link rel="stylesheet" href="~/vendor/animate/animate.compat.css">
-    <link rel="stylesheet" href="~/vendor/font-awesome/css/all.min.css" />
-    <link rel="stylesheet" href="~/vendor/boxicons/css/boxicons.min.css" />
-    <link rel="stylesheet" href="~/vendor/magnific-popup/magnific-popup.css" />
-    <link rel="stylesheet" href="~/vendor/bootstrap-datepicker/css/bootstrap-datepicker3.css" />
-    <link rel="stylesheet" href="~/vendor/select2/css/select2.css" />
-    <link rel="stylesheet" href="~/vendor/select2-bootstrap-theme/select2-bootstrap.min.css" />
-    <link rel="stylesheet" href="~/vendor/datatables/media/css/dataTables.bootstrap5.css" />
-
-    <!-- Theme CSS -->
-    <link rel="stylesheet" href="~/css/theme.css" />
-
-    <!-- Skin CSS -->
-    <link rel="stylesheet" href="~/css/skins/default.css" />
-
-    <!-- Theme Custom CSS -->
-    <link rel="stylesheet" href="~/css/custom.css">
-
-    <!-- Head Libs -->
-    <script src="~/vendor/modernizr/modernizr.js"></script>
-    *@
-
+    <!--Bootstrap Icons-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css">
 
 </head>
 <body>
@@ -91,12 +68,15 @@
         <!-- start: header -->
         <header class="header">
             <div class="logo-container">
-                <a href="../4.0.0" class="logo">
-                    <img src="img/logo.png" width="75" height="35" alt="Porto Admin" />
-                </a>
 
-                <div class="d-md-none toggle-sidebar-left" data-toggle-class="sidebar-left-opened" data-target="html" data-fire-event="sidebar-left-opened">
-                    <i class="fas fa-bars" aria-label="Toggle sidebar"></i>
+                <div class="row">
+                    <div class="col">
+                    </div>
+                    <div class="col">
+                        <div class="d-md-none toggle-sidebar-left" data-toggle-class="sidebar-left-opened" data-target="html" data-fire-event="sidebar-left-opened">
+                            <i class="fas fa-bars" aria-label="Toggle sidebar"></i>
+                        </div>
+                    </div>
                 </div>
 
             </div>
@@ -104,12 +84,12 @@
             <!-- start: search & user box -->
             <div class="header-right">
 
-                <form action="pages-search-results.html" class="search nav-form">
-                    <div class="input-group">
-                        <input type="text" class="form-control" name="q" id="q" placeholder="Search...">
-                        <button class="btn btn-default" type="submit"><i class="bx bx-search"></i></button>
-                    </div>
-                </form>
+                @*                <form action="pages-search-results.html" class="search nav-form">
+                <div class="input-group">
+                <input type="text" class="form-control" name="q" id="q" placeholder="Search...">
+                <button class="btn btn-default" type="submit"><i class="bx bx-search"></i></button>
+                </div>
+                </form>*@
 
                 <span class="separator"></span>
 
@@ -280,16 +260,16 @@
 
                 <div id="userbox" class="userbox">
                     <a href="#" data-bs-toggle="dropdown">
-                        <figure class="profile-picture">
-                            <img src="" />
+                        @*           <figure class="profile-picture">
+                        <img src="" />
                         </figure>
-                        @*<div class="profile-info">
+                        <div class="profile-info">
                         @if (SignInManager.IsSignedIn(User))
                         {
-                        <span class="name">@Model.FullName</span>
+                        <span class="name">@User.FullName</span>
                         <span class="role">
                         @{
-                        await rolesService.GetUserRolesAsync(Model);
+                        await rolesService.GetUserRolesAsync(User);
                         }
                         </span>
                         }
@@ -325,7 +305,7 @@
 
                 <div class="sidebar-header">
                     <div class="sidebar-title">
-                        Navigation
+                        <span class="h3">Hello, @((await userManager.GetUserAsync(User)).FirstName)! </span>
                     </div>
                     <div class="sidebar-toggle d-none d-md-block" data-toggle-class="sidebar-left-collapsed" data-target="html" data-fire-event="sidebar-left-toggle">
                         <i class="fas fa-bars" aria-label="Toggle sidebar"></i>
@@ -418,16 +398,13 @@
                 </div>
 
             </aside>
+            <!-- end: sidebar -->
+            <section role="main" class="content-body">
+                @RenderBody()
+            </section>
         </div>
-        <!-- end: sidebar -->
-
-        <section role="main" class="content-body">
 
 
-            @RenderBody()
-
-
-        </section>
 
 
     </section>

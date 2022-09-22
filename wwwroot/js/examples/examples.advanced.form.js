@@ -5,8 +5,6 @@ Theme Version: 	4.0.0
 */
 
 (function($) {
-
-
 	/*
 	Multi Select: Toggle All Button
 	*/
@@ -62,5 +60,4 @@ Theme Version: 	4.0.0
 		$('.output2 b.min').text( min );
 		$('.output2 b.max').text( max );
 	});
-
 }(jQuery));

@@ -13,11 +13,11 @@ CodeMirror.StringStream = StringStream
 for (var exported in modeMethods) CodeMirror[exported] = modeMethods[exported]
 
 // Minimal default mode.
-CodeMirror.defineMode("null", () => ({token: stream => stream.skipToEnd()}))
+CodeMirror.defineMode("null", () => ({ token: stream => stream.skipToEnd() }))
 CodeMirror.defineMIME("text/plain", "null")
 
 CodeMirror.registerHelper = CodeMirror.registerGlobalHelper = Math.min
-CodeMirror.splitLines = function(string) { return string.split(/\r?\n|\r/) }
+CodeMirror.splitLines = function (string) { return string.split(/\r?\n|\r/) }
 CodeMirror.countColumn = countColumn
 
 CodeMirror.defaults = { indentUnit: 2 }

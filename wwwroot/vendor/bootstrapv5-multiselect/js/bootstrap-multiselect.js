@@ -45,7 +45,6 @@
     // check to see if 'knockout' AMD module is specified if using requirejs
     if (typeof define === 'function' && define.amd &&
         typeof require === 'function' && typeof require.specified === 'function' && require.specified('knockout')) {
-
         // AMD. Register as an anonymous module.
         define(['jquery', 'knockout'], factory);
     } else {
@@ -184,7 +183,6 @@
      * @returns {Multiselect}
      */
     function Multiselect(select, options) {
-
         this.$select = $(select);
         this.options = this.mergeOptions($.extend({}, options, this.$select.data()));
 
@@ -243,7 +241,6 @@
     }
 
     Multiselect.prototype = {
-
         defaults: {
             /**
              * Default text function will either print 'None selected' in case no
@@ -265,7 +262,6 @@
                     && selectedOptions.length === $('option', $(select)).length
                     && $('option', $(select)).length !== 1
                     && this.multiple) {
-
                     if (this.selectAllNumber) {
                         return this.allSelectedText + ' (' + selectedOptions.length + ')';
                     }
@@ -340,7 +336,6 @@
              * @param {Boolean} checked
              */
             onChange: function (option, checked) {
-
             },
             /**
              * Triggered when the dropdown is shown.
@@ -348,7 +343,6 @@
              * @param {jQuery} event
              */
             onDropdownShow: function (event) {
-
             },
             /**
              * Triggered when the dropdown is hidden.
@@ -356,7 +350,6 @@
              * @param {jQuery} event
              */
             onDropdownHide: function (event) {
-
             },
             /**
              * Triggered after the dropdown is shown.
@@ -364,7 +357,6 @@
              * @param {jQuery} event
              */
             onDropdownShown: function (event) {
-
             },
             /**
              * Triggered after the dropdown is hidden.
@@ -372,19 +364,16 @@
              * @param {jQuery} event
              */
             onDropdownHidden: function (event) {
-
             },
             /**
              * Triggered on select all.
              */
             onSelectAll: function () {
-
             },
             /**
              * Triggered on deselect all.
              */
             onDeselectAll: function () {
-
             },
             /**
              * Triggered after initializing.
@@ -393,7 +382,6 @@
              * @param {jQuery} $container
              */
             onInitialized: function ($select, $container) {
-
             },
             /**
              * Triggered on filtering.
@@ -401,7 +389,6 @@
              * @param {jQuery} $filter
              */
             onFiltering: function ($filter) {
-
             },
             enableHTML: false,
             buttonClass: 'form-select',
@@ -532,7 +519,6 @@
          * Builds the popup container representing the dropdown menu.
          */
         buildDropdown: function () {
-
             // Build popup container.
             this.$popupContainer = $(this.options.templates.popupContainer);
 
@@ -590,9 +576,7 @@
          * Uses createDivider and createOptionValue to create the necessary options.
          */
         buildDropdownOptions: function () {
-
             this.$select.children().each($.proxy(function (index, element) {
-
                 var $element = $(element);
                 // Support optgroups and options without a group simultaneously.
                 var tag = $element.prop('tagName')
@@ -606,14 +590,12 @@
                     this.createOptgroup(element);
                 }
                 else if (tag === 'option') {
-
                     if ($element.data('role') === 'divider') {
                         this.createDivider();
                     }
                     else {
                         this.createOptionValue(element, false);
                     }
-
                 }
 
                 // Other illegal tags will be ignored.
@@ -647,7 +629,6 @@
                 var $checkboxesNotThis = $('input', this.$container).not($target);
 
                 if (isSelectAllOption) {
-
                     if (checked) {
                         this.selectAll(this.options.selectAllJustVisible, true);
                     }
@@ -765,9 +746,9 @@
                     var $checkbox = $target.closest('.multiselect-option, .multiselect-all').find('.form-check-input');
                     if ($checkbox.length > 0) {
                         if (this.options.multiple || !$checkbox.prop('checked')) {
-                        $checkbox.prop('checked', !$checkbox.prop('checked'));
-                        $checkbox.change();
-                    }
+                            $checkbox.prop('checked', !$checkbox.prop('checked'));
+                            $checkbox.change();
+                        }
                     }
                     else if (this.options.enableClickableOptGroups && this.options.multiple && !$target.hasClass("caret-container")) {
                         var groupItem = $target;
@@ -921,11 +902,11 @@
 
         /**
          * Create a checkbox container with input and label based on given values
-         * @param {JQuery} $item 
-         * @param {String} label 
-         * @param {String} name 
-         * @param {String} value 
-         * @param {String} inputType 
+         * @param {JQuery} $item
+         * @param {String} label
+         * @param {String} name
+         * @param {String} value
+         * @param {String} inputType
          * @returns {JQuery}
          */
         createCheckbox: function ($item, label, name, value, title, inputType) {
@@ -933,7 +914,7 @@
             $wrapper.addClass("form-check");
 
             if (this.options.enableHTML && $(label).length > 0) {
-                var $checkboxLabel = $('<label class="form-check-label" />'); 
+                var $checkboxLabel = $('<label class="form-check-label" />');
                 $checkboxLabel.html(label);
                 $wrapper.append($checkboxLabel);
             }
@@ -1078,7 +1059,6 @@
          */
         buildReset: function () {
             if (this.options.includeResetOption) {
-
                 // Check whether to add a divider after the reset.
                 if (this.options.includeResetDivider) {
                     var divider = $(this.options.templates.divider);
@@ -1117,7 +1097,6 @@
 
             if (!alreadyHasSelectAll && this.options.includeSelectAllOption && this.options.multiple
                 && $('option', this.$select).length > this.options.includeSelectAllIfMoreThan) {
-
                 // Check whether to add a divider after the select all.
                 if (this.options.includeSelectAllDivider) {
                     this.$popupContainer.prepend($(this.options.templates.divider));
@@ -1140,17 +1119,15 @@
          * Builds the filter.
          */
         buildFilter: function () {
-
             // Build filter if filtering OR case insensitive filtering is enabled and the number of options exceeds (or equals) enableFilterLength.
             if (this.options.enableFiltering || this.options.enableCaseInsensitiveFiltering) {
                 var enableFilterLength = Math.max(this.options.enableFiltering, this.options.enableCaseInsensitiveFiltering);
 
                 if (this.$select.find('option').length >= enableFilterLength) {
-
                     this.$filter = $(this.options.templates.filter);
                     $('input', this.$filter).attr('placeholder', this.options.filterPlaceholder);
 
-                    // Handles optional filter clear button                        
+                    // Handles optional filter clear button
                     if (!this.options.includeFilterClearBtn) {
                         this.$filter.find(".multiselect-search").attr("type", "text");
 
@@ -1175,7 +1152,6 @@
                             if (this.options.enableClickableOptGroups && this.options.multiple) {
                                 this.updateOptGroups();
                             }
-
                         }, this));
                     }
 
@@ -1202,7 +1178,6 @@
                         clearTimeout(this.searchTimeout);
 
                         this.searchTimeout = this.asyncFunction($.proxy(function () {
-
                             if (this.query !== event.target.value) {
                                 this.query = event.target.value;
 
@@ -1223,7 +1198,6 @@
                                     }
 
                                     if (value !== this.options.selectAllValue && text) {
-
                                         // By default lets assume that element is not
                                         // interesting for this search.
                                         var showElement = false;
@@ -1283,7 +1257,6 @@
                             }
 
                             this.options.onFiltering(event.target);
-
                         }, this), 300, this);
                     }, this));
                 }
@@ -1478,7 +1451,6 @@
          * @param {Boolean} triggerOnSelectAll
          */
         selectAll: function (justVisible, triggerOnSelectAll) {
-
             var justVisible = typeof justVisible === 'undefined' ? true : justVisible;
 
             if (justVisible) {
@@ -1526,7 +1498,6 @@
          * @param {Boolean} justVisible
          */
         deselectAll: function (justVisible, triggerOnDeselectAll) {
-
             var justVisible = typeof justVisible === 'undefined' ? true : justVisible;
 
             if (justVisible) {
@@ -1611,7 +1582,6 @@
          * The provided data will be used to build the dropdown.
          */
         dataprovider: function (dataprovider) {
-
             var groupCounter = 0;
             var $select = this.$select.empty();
 
@@ -1645,7 +1615,6 @@
                     });
                 }
                 else {
-
                     var attributes = {
                         'value': option.value,
                         'label': option.label || option.value,
@@ -1811,7 +1780,6 @@
          * @returns {jQuery}
          */
         getOptionByValue: function (value) {
-
             var options = $('option', this.$select);
             var valueToCompare = value.toString();
 
@@ -1830,7 +1798,6 @@
          * @returns {jQuery}
          */
         getInputByValue: function (value) {
-
             var checkboxes = $('.multiselect-option input:not(.multiselect-search)', this.$popupContainer);
             var valueToCompare = value.toString();
 
@@ -1900,5 +1867,4 @@
     $(function () {
         $("select[data-role=multiselect]").multiselect();
     });
-
 });

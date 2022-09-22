@@ -1,22 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using BugTracker.Data;
+﻿using BugTracker.Data;
+using BugTracker.Extensions;
 using BugTracker.Models;
+using BugTracker.Models.Enums;
 using BugTracker.Models.ViewModels;
 using BugTracker.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using BugTracker.Models.Enums;
-using BugTracker.Extensions;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace BugTracker.Controllers
 {
-
     [Authorize]
     public class ProjectsController : Controller
     {
@@ -45,7 +40,6 @@ namespace BugTracker.Controllers
             var currentProjects = await _projectService.GetCurrentProjectsByCompanyIdAsync(companyId);
 
             return View(currentProjects);
-
         }
 
         //GET: All Projects
@@ -57,9 +51,7 @@ namespace BugTracker.Controllers
             List<Project> allProjects = await _projectService.GetAllProjectsByCompanyIdAsync(companyId);
 
             return View(allProjects);
-
         }
-
 
         // GET: Projects/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -99,7 +91,6 @@ namespace BugTracker.Controllers
         {
             if (ModelState.IsValid)
             {
-
                 viewModel.Project!.CompanyId = User.Identity!.GetCompanyId();
 
                 //Dates
@@ -128,7 +119,6 @@ namespace BugTracker.Controllers
         }
 
         [Authorize(Roles = "Admin, ProjectManager")]
-        // GET: Projects/Edit/5
         public async Task<IActionResult> Edit(int? id)
 
         {
@@ -239,24 +229,18 @@ namespace BugTracker.Controllers
             await _projectService.ArchiveProjectAsync(id);
 
             return RedirectToAction(nameof(ArchivedProjects));
-
         }
-
-
 
         // GET: ArchivedProjects
         //TODO: maybe only authorize PM and admin to see archived projects in view. ask antonio
         public async Task<IActionResult> ArchivedProjects()
         {
-
             int companyId = User.Identity!.GetCompanyId();
 
             List<Project> archivedProjects = await _projectService.GetArchivedProjectsByCompanyIdAsync(companyId);
 
             return View(archivedProjects);
-
         }
-
 
         //GET: Project to Restore and then confirm
         [Authorize(Roles = "Admin, ProjectManager")]
@@ -274,7 +258,6 @@ namespace BugTracker.Controllers
             }
 
             return View(project);
-
         }
 
         [HttpPost, ActionName("Restore")]
@@ -290,7 +273,6 @@ namespace BugTracker.Controllers
                 await _projectService.RestoreProjectAsync(id);
 
                 return RedirectToAction(nameof(Index));
-
             }
         }
 
@@ -347,7 +329,6 @@ namespace BugTracker.Controllers
             return View(unassignedProjects);
         }
 
-
         //GET: Add Team Members Page
         [Authorize(Roles = "Admin, ProjectManager")]
         public async Task<IActionResult> AddTeamMembers(int id, int companyId)
@@ -385,18 +366,11 @@ namespace BugTracker.Controllers
             }
 
             return RedirectToAction(nameof(Index));
-
         }
-
-
-
-
-
 
         private bool ProjectExists(int id)
         {
             return (_context.Projects?.Any(e => e.Id == id)).GetValueOrDefault();
         }
-
     }
 }

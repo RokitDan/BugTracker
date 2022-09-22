@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace BugTracker.Models
+﻿namespace BugTracker.Models
 {
     public class NotificationType
     {

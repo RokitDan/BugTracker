@@ -1,36 +1,36 @@
 {{#extend "example-group"}}
-  {{#content "description"}}
-    <p>
-      To extend the functionality of Bootstrap Colorpicker, there is something called Bootstrap Colorpicker Extensions.
-      The library comes with many core extensions like: <var>preview</var> (enabled by default),
-      <var>debugger</var>, <var>swatches</var> and <var>palette</var> (used by swatches to resolve named colors), but
-      you can also create your own using the
-      <a href="Extension.html">$.colorpicker.Extension</a> class and adding it globally to the
-      <code>Colorpicker.extensions</code> static property or to your instance using
-      <code>myColorpicker.registerExtension(MyExtensionClass, extensionOptions)</code>.
-      <br>
-      Think of an extension as a plugin for Bootstrap Colorpicker, capable of listen and react to all of its events in
-      a single place, as well as being able to resolve colors (like the swatches extension does).
-    </p>
-  {{/content}}
-  {{#content "body"}}
+{{#content "description"}}
+<p>
+    To extend the functionality of Bootstrap Colorpicker, there is something called Bootstrap Colorpicker Extensions.
+    The library comes with many core extensions like: <var>preview</var> (enabled by default),
+    <var>debugger</var>, <var>swatches</var> and <var>palette</var> (used by swatches to resolve named colors), but
+    you can also create your own using the
+    <a href="Extension.html">$.colorpicker.Extension</a> class and adding it globally to the
+    <code>Colorpicker.extensions</code> static property or to your instance using
+    <code>myColorpicker.registerExtension(MyExtensionClass, extensionOptions)</code>.
+    <br>
+    Think of an extension as a plugin for Bootstrap Colorpicker, capable of listen and react to all of its events in
+    a single place, as well as being able to resolve colors (like the swatches extension does).
+</p>
+{{/content}}
+{{#content "body"}}
 
-    {{#extend "example"}}
-      {{#content "title"}} Color Swatches {{/content}}
+{{#extend "example"}}
+{{#content "title"}} Color Swatches {{/content}}
 
-      {{#content "description"}}
-        <p>
-          This example shows how use the <var>swatches</var> extension
-          to define a list of preset color swatches (or color palette)
-          and use their aliases as input values. W3C named colors are also supported.
-        </p>
-      {{/content}}
+{{#content "description"}}
+<p>
+    This example shows how use the <var>swatches</var> extension
+    to define a list of preset color swatches (or color palette)
+    and use their aliases as input values. W3C named colors are also supported.
+</p>
+{{/content}}
 
-      {{#content "code"}}
-        <div id="cp1" data-color="primary">
-          <input type="text" class="form-control" style="width:auto"/> <br>
-        </div>
-        <script>
+{{#content "code"}}
+<div id="cp1" data-color="primary">
+    <input type="text" class="form-control" style="width:auto" /> <br>
+</div>
+<script>
           $(function () {
             $('#cp1').colorpicker({
               inline: true,
@@ -57,32 +57,32 @@
               ]
             });
           });
-        </script>
-      {{/content}}
-    {{/extend}}
+</script>
+{{/content}}
+{{/extend}}
 
-    {{#extend "example"}}
-      {{#content "title"}} Debug Mode {{/content}}
-      {{#content "description"}}
-        <p>
-          When the <var>debug</var> option is enabled, the builtin <var>debugger</var> extension
-          will be loaded.
-          <br>
-          On debug mode, every event is logged (as debug/verbose level) in the browser console.
-          You can also intercept those logs with the 'colorpickerDebug' event, as shown
-          in this example.
-          <br>
-          This example also shows how the events are triggered and when.
-        </p>
-      {{/content}}
-      {{#content "code"}}
-        <div id="cp2" class="input-group">
-          <input type="text" class="form-control input-lg" value="#902100"/>
-          <span class="input-group-text colorpicker-input-addon"><i></i></span>
-        </div>
-        <br>
-        <ul id="cp2_debug"></ul>
-        <script>
+{{#extend "example"}}
+{{#content "title"}} Debug Mode {{/content}}
+{{#content "description"}}
+<p>
+    When the <var>debug</var> option is enabled, the builtin <var>debugger</var> extension
+    will be loaded.
+    <br>
+    On debug mode, every event is logged (as debug/verbose level) in the browser console.
+    You can also intercept those logs with the 'colorpickerDebug' event, as shown
+    in this example.
+    <br>
+    This example also shows how the events are triggered and when.
+</p>
+{{/content}}
+{{#content "code"}}
+<div id="cp2" class="input-group">
+    <input type="text" class="form-control input-lg" value="#902100" />
+    <span class="input-group-text colorpicker-input-addon"><i></i></span>
+</div>
+<br>
+<ul id="cp2_debug"></ul>
+<script>
           $(function () {
             var n = 0;
             $('#cp2')
@@ -99,10 +99,9 @@
                   dbg.append('<li>' + n + ': ' + e.debug.eventName + '</li>');
                 });
           });
-        </script>
-      {{/content}}
-    {{/extend}}
+</script>
+{{/content}}
+{{/extend}}
 
-
-  {{/content}}
+{{/content}}
 {{/extend}}

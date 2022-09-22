@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 
-
 namespace BugTracker.Models.ViewModels
 {
     public class ProjectMembersViewModel

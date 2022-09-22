@@ -1,6 +1,123 @@
 /* Add here all your CSS customizations */
 
+:root {
+    --cf-primaryColor: #e56363;
+    --cf-primaryColorDark: #002a4e;
+    --cf-primaryColorLight: #f1f9fc;
+    --cf-secondaryColor: #333743;
+    --cf-secondaryColorLight: #FFF8EC;
+    --cf-dark-color: #002a4e;
+    --cf-light-gray: #d9d9d9;
+    --cf-light-color: #f1f9fc;
+    --cf-title-font: 'Montserrat', sans-serif;
+    --cf-body-font: 'Lato', sans-serif;
+    --dls-dark-color: #1b2432;
+    --dls-light-color: #f1f9fc;
+    --dls-light2-color: rgba(250, 250, 250, 0.8);
+    --dls-primary-color: #e56363;
+    --dls-secondary-color: #333743;
+    --dls-action-color: #c9e7da;
+    --dls-highlight-color: #ff5d5d;
+    --dls-background-color: rgba(250, 250, 250, 0.8);
+    --dls-nav-toggler-glow: #f1f9fc;
+    --dls-nav-toggler-color: #1b2432;
+    --dls-title-color: var(var(--dls-secondary-color));
+}
 
 .btn {
     border-radius: 300px;
+}
+
+#editIconLight {
+    font-size: 1.2rem;
+    opacity: .9;
+    color: var(--dls-light-color) !important;
+}
+
+    #editIconLight:hover {
+        color: var(--dls-light2-color) !important;
+        font-weight: bold;
+        opacity: 1;
+        cursor: pointer;
+    }
+
+#addIcon {
+    font-size: 1.1rem;
+    opacity: .8;
+    color: dodgerblue;
+}
+
+    #addIcon:hover {
+        opacity: 1;
+        cursor: pointer;
+        color: white;
+    }
+
+#deleteIconLight {
+    font-size: 1.2rem;
+    opacity: .9;
+    color: var(--dls-light-color) !important;
+}
+
+    #deleteIconLight:hover {
+        color: var(--dls-light2-color) !important;
+        font-weight: bold;
+        opacity: 1;
+        cursor: pointer;
+    }
+
+#detailsIconLight {
+    font-size: 1.2rem;
+    opacity: .9;
+    color: var(--dls-light-color) !important;
+}
+
+    #detailsIconLight:hover {
+        color: var(--dls-light2-color) !important;
+        font-weight: bold;
+        opacity: 1;
+        cursor: pointer;
+    }
+
+.card-urgent header {
+    background-color: darkred;
+}
+
+    .card-urgent header div {
+        color: white !important;
+    }
+
+#addButton {
+    border-color: dodgerblue;
+}
+
+    #addButton:hover {
+        background-color: dodgerblue !important;
+        color: white !important;
+    }
+
+.roundedCorners {
+    border-radius: 1rem;
+}
+
+.square-img-container {
+    position: relative;
+}
+
+    .square-img-container::after {
+        content: "";
+        display: block;
+        padding-bottom: 100%;
+    }
+
+.square-img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+}
+
+.biggerIcon {
+    font-size: 1.2rem;
 }

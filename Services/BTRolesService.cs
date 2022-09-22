@@ -1,5 +1,5 @@
-﻿using BugTracker.Models;
-using BugTracker.Data;
+﻿using BugTracker.Data;
+using BugTracker.Models;
 using BugTracker.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +11,6 @@ namespace BugTracker.Services
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<BTUser> _userManager;
         private readonly ApplicationDbContext _context;
-
 
         public BTRolesService(RoleManager<IdentityRole> roleManager, UserManager<BTUser> userManager, ApplicationDbContext context)
         {
@@ -26,7 +25,6 @@ namespace BugTracker.Services
             {
                 bool result = (await _userManager.AddToRoleAsync(user, roleName)).Succeeded;
                 return result;
-
             }
             catch
             {
@@ -54,7 +52,6 @@ namespace BugTracker.Services
                 //The roles need cinnamon butter, but no cinnamon butter exists in the database :(
                 IEnumerable<string> texasRoadHouse = await _userManager.GetRolesAsync(user);
                 return texasRoadHouse;
-
             }
             catch
             {
@@ -77,9 +74,6 @@ namespace BugTracker.Services
             }
         }
 
-
-
-
         public async Task<bool> IsUserInRoleAsync(BTUser member, string roleName)
         {
             try
@@ -90,7 +84,6 @@ namespace BugTracker.Services
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
@@ -101,7 +94,6 @@ namespace BugTracker.Services
             {
                 bool result = (await _userManager.RemoveFromRoleAsync(user, roleName)).Succeeded;
                 return result;
-
             }
             catch
             {
@@ -115,7 +107,6 @@ namespace BugTracker.Services
             {
                 bool result = (await _userManager.RemoveFromRolesAsync(user, roleNames)).Succeeded;
                 return result;
-
             }
             catch
             {

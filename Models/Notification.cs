@@ -6,6 +6,7 @@ namespace BugTracker.Models
     {
         [Required]
         public int Id { get; set; }
+
         public string? Title { get; set; }
         public string? Message { get; set; }
         public DateTime? CreatedDate { get; set; }
@@ -14,26 +15,21 @@ namespace BugTracker.Models
 
         //foreign keys
         public int? TicketId { get; set; }
+
         public int? ProjectId { get; set; }
+
         [Required]
         public string? SenderId { get; set; }
+
         [Required]
         public string? RecipientId { get; set; }
 
         //nav properties
         public virtual NotificationType? NotificationType { get; set; }
+
         public virtual Ticket? Ticket { get; set; }
         public virtual Project? Project { get; set; }
         public virtual BTUser? Sender { get; set; }
         public virtual BTUser? Recipient { get; set; }
-
-
-
-
-
-
-
-
-
     }
 }

@@ -1,5 +1,5 @@
-﻿using BugTracker.Models;
-using BugTracker.Data;
+﻿using BugTracker.Data;
+using BugTracker.Models;
 using BugTracker.Services.Interfaces;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
@@ -11,13 +11,11 @@ namespace BugTracker.Services
         private readonly ApplicationDbContext _context;
         private readonly IEmailSender _emailService;
 
-
         public BTNotificationService(ApplicationDbContext context, IEmailSender emailService)
         {
             _context = context;
             _emailService = emailService;
         }
-
 
         public async Task AddNotificationAsync(Notification notification)
         {

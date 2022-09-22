@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using BugTracker.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using BugTracker.Models;
 
 namespace BugTracker.Data
 {
@@ -24,7 +24,5 @@ namespace BugTracker.Data
         public virtual DbSet<TicketStatus> TicketStatuses { get; set; } = default!;
         public virtual DbSet<TicketType> TicketTypes { get; set; } = default!;
         public virtual DbSet<TicketHistory>? TicketHistory { get; set; } = default!;
-
-
     }
 }

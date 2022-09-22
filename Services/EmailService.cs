@@ -1,15 +1,14 @@
-﻿using Microsoft.AspNetCore.Identity.UI.Services;
+﻿using BugTracker.Models;
 using MailKit.Net.Smtp;
 using MailKit.Security;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Options;
 using MimeKit;
-using BugTracker.Models;
 
 namespace BugTracker.Services
 {
     public class EmailService : IEmailSender
     {
-
         private readonly MailSettings _mailSettings;
 
         public EmailService(IOptions<MailSettings> mailSettings)
@@ -32,8 +31,7 @@ namespace BugTracker.Services
             newEmail.Sender = MailboxAddress.Parse(emailSender);
             newEmail.To.Add(MailboxAddress.Parse(email));
 
-
-            //add the subject for the email 
+            //add the subject for the email
             newEmail.Subject = subject;
 
             //add the body for the email
@@ -41,7 +39,7 @@ namespace BugTracker.Services
             emailBody.HtmlBody = htmlMessage;
             newEmail.Body = emailBody.ToMessageBody();
 
-            //send the email 
+            //send the email
             using SmtpClient smtpClient = new SmtpClient();
             try
             {
@@ -52,14 +50,11 @@ namespace BugTracker.Services
 
                 await smtpClient.SendAsync(newEmail);
                 await smtpClient.DisconnectAsync(true);
-
             }
             catch
             {
                 throw;
             }
-
         }
     }
-
 }

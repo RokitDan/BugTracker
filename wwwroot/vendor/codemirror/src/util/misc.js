@@ -1,63 +1,63 @@
 export function bind(f) {
-  let args = Array.prototype.slice.call(arguments, 1)
-  return function(){return f.apply(null, args)}
+    let args = Array.prototype.slice.call(arguments, 1)
+    return function () { return f.apply(null, args) }
 }
 
 export function copyObj(obj, target, overwrite) {
-  if (!target) target = {}
-  for (let prop in obj)
-    if (obj.hasOwnProperty(prop) && (overwrite !== false || !target.hasOwnProperty(prop)))
-      target[prop] = obj[prop]
-  return target
+    if (!target) target = {}
+    for (let prop in obj)
+        if (obj.hasOwnProperty(prop) && (overwrite !== false || !target.hasOwnProperty(prop)))
+            target[prop] = obj[prop]
+    return target
 }
 
 // Counts the column offset in a string, taking tabs into account.
 // Used mostly to find indentation.
 export function countColumn(string, end, tabSize, startIndex, startValue) {
-  if (end == null) {
-    end = string.search(/[^\s\u00a0]/)
-    if (end == -1) end = string.length
-  }
-  for (let i = startIndex || 0, n = startValue || 0;;) {
-    let nextTab = string.indexOf("\t", i)
-    if (nextTab < 0 || nextTab >= end)
-      return n + (end - i)
-    n += nextTab - i
-    n += tabSize - (n % tabSize)
-    i = nextTab + 1
-  }
+    if (end == null) {
+        end = string.search(/[^\s\u00a0]/)
+        if (end == -1) end = string.length
+    }
+    for (let i = startIndex || 0, n = startValue || 0; ;) {
+        let nextTab = string.indexOf("\t", i)
+        if (nextTab < 0 || nextTab >= end)
+            return n + (end - i)
+        n += nextTab - i
+        n += tabSize - (n % tabSize)
+        i = nextTab + 1
+    }
 }
 
 export class Delayed {
-  constructor() {
-    this.id = null
-    this.f = null
-    this.time = 0
-    this.handler = bind(this.onTimeout, this)
-  }
-  onTimeout(self) {
-    self.id = 0
-    if (self.time <= +new Date) {
-      self.f()
-    } else {
-      setTimeout(self.handler, self.time - +new Date)
+    constructor() {
+        this.id = null
+        this.f = null
+        this.time = 0
+        this.handler = bind(this.onTimeout, this)
     }
-  }
-  set(ms, f) {
-    this.f = f
-    const time = +new Date + ms
-    if (!this.id || time < this.time) {
-      clearTimeout(this.id)
-      this.id = setTimeout(this.handler, ms)
-      this.time = time
+    onTimeout(self) {
+        self.id = 0
+        if (self.time <= +new Date) {
+            self.f()
+        } else {
+            setTimeout(self.handler, self.time - +new Date)
+        }
     }
-  }
+    set(ms, f) {
+        this.f = f
+        const time = +new Date + ms
+        if (!this.id || time < this.time) {
+            clearTimeout(this.id)
+            this.id = setTimeout(this.handler, ms)
+            this.time = time
+        }
+    }
 }
 
 export function indexOf(array, elt) {
-  for (let i = 0; i < array.length; ++i)
-    if (array[i] == elt) return i
-  return -1
+    for (let i = 0; i < array.length; ++i)
+        if (array[i] == elt) return i
+    return -1
 }
 
 // Number of pixels added to scroller and sizer to hide scrollbar
@@ -65,76 +65,76 @@ export let scrollerGap = 50
 
 // Returned or thrown by various protocols to signal 'I'm not
 // handling this'.
-export let Pass = {toString: function(){return "CodeMirror.Pass"}}
+export let Pass = { toString: function () { return "CodeMirror.Pass" } }
 
 // Reused option objects for setSelection & friends
-export let sel_dontScroll = {scroll: false}, sel_mouse = {origin: "*mouse"}, sel_move = {origin: "+move"}
+export let sel_dontScroll = { scroll: false }, sel_mouse = { origin: "*mouse" }, sel_move = { origin: "+move" }
 
 // The inverse of countColumn -- find the offset that corresponds to
 // a particular column.
 export function findColumn(string, goal, tabSize) {
-  for (let pos = 0, col = 0;;) {
-    let nextTab = string.indexOf("\t", pos)
-    if (nextTab == -1) nextTab = string.length
-    let skipped = nextTab - pos
-    if (nextTab == string.length || col + skipped >= goal)
-      return pos + Math.min(skipped, goal - col)
-    col += nextTab - pos
-    col += tabSize - (col % tabSize)
-    pos = nextTab + 1
-    if (col >= goal) return pos
-  }
+    for (let pos = 0, col = 0; ;) {
+        let nextTab = string.indexOf("\t", pos)
+        if (nextTab == -1) nextTab = string.length
+        let skipped = nextTab - pos
+        if (nextTab == string.length || col + skipped >= goal)
+            return pos + Math.min(skipped, goal - col)
+        col += nextTab - pos
+        col += tabSize - (col % tabSize)
+        pos = nextTab + 1
+        if (col >= goal) return pos
+    }
 }
 
 let spaceStrs = [""]
 export function spaceStr(n) {
-  while (spaceStrs.length <= n)
-    spaceStrs.push(lst(spaceStrs) + " ")
-  return spaceStrs[n]
+    while (spaceStrs.length <= n)
+        spaceStrs.push(lst(spaceStrs) + " ")
+    return spaceStrs[n]
 }
 
-export function lst(arr) { return arr[arr.length-1] }
+export function lst(arr) { return arr[arr.length - 1] }
 
 export function map(array, f) {
-  let out = []
-  for (let i = 0; i < array.length; i++) out[i] = f(array[i], i)
-  return out
+    let out = []
+    for (let i = 0; i < array.length; i++) out[i] = f(array[i], i)
+    return out
 }
 
 export function insertSorted(array, value, score) {
-  let pos = 0, priority = score(value)
-  while (pos < array.length && score(array[pos]) <= priority) pos++
-  array.splice(pos, 0, value)
+    let pos = 0, priority = score(value)
+    while (pos < array.length && score(array[pos]) <= priority) pos++
+    array.splice(pos, 0, value)
 }
 
-function nothing() {}
+function nothing() { }
 
 export function createObj(base, props) {
-  let inst
-  if (Object.create) {
-    inst = Object.create(base)
-  } else {
-    nothing.prototype = base
-    inst = new nothing()
-  }
-  if (props) copyObj(props, inst)
-  return inst
+    let inst
+    if (Object.create) {
+        inst = Object.create(base)
+    } else {
+        nothing.prototype = base
+        inst = new nothing()
+    }
+    if (props) copyObj(props, inst)
+    return inst
 }
 
 let nonASCIISingleCaseWordChar = /[\u00df\u0587\u0590-\u05f4\u0600-\u06ff\u3040-\u309f\u30a0-\u30ff\u3400-\u4db5\u4e00-\u9fcc\uac00-\ud7af]/
 export function isWordCharBasic(ch) {
-  return /\w/.test(ch) || ch > "\x80" &&
-    (ch.toUpperCase() != ch.toLowerCase() || nonASCIISingleCaseWordChar.test(ch))
+    return /\w/.test(ch) || ch > "\x80" &&
+        (ch.toUpperCase() != ch.toLowerCase() || nonASCIISingleCaseWordChar.test(ch))
 }
 export function isWordChar(ch, helper) {
-  if (!helper) return isWordCharBasic(ch)
-  if (helper.source.indexOf("\\w") > -1 && isWordCharBasic(ch)) return true
-  return helper.test(ch)
+    if (!helper) return isWordCharBasic(ch)
+    if (helper.source.indexOf("\\w") > -1 && isWordCharBasic(ch)) return true
+    return helper.test(ch)
 }
 
 export function isEmpty(obj) {
-  for (let n in obj) if (obj.hasOwnProperty(n) && obj[n]) return false
-  return true
+    for (let n in obj) if (obj.hasOwnProperty(n) && obj[n]) return false
+    return true
 }
 
 // Extending unicode characters. A series of a non-extending char +
@@ -147,22 +147,22 @@ export function isExtendingChar(ch) { return ch.charCodeAt(0) >= 768 && extendin
 
 // Returns a number from the range [`0`; `str.length`] unless `pos` is outside that range.
 export function skipExtendingChars(str, pos, dir) {
-  while ((dir < 0 ? pos > 0 : pos < str.length) && isExtendingChar(str.charAt(pos))) pos += dir
-  return pos
+    while ((dir < 0 ? pos > 0 : pos < str.length) && isExtendingChar(str.charAt(pos))) pos += dir
+    return pos
 }
 
 // Returns the value from the range [`from`; `to`] that satisfies
 // `pred` and is closest to `from`. Assumes that at least `to`
 // satisfies `pred`. Supports `from` being greater than `to`.
 export function findFirst(pred, from, to) {
-  // At any point we are certain `to` satisfies `pred`, don't know
-  // whether `from` does.
-  let dir = from > to ? -1 : 1
-  for (;;) {
-    if (from == to) return from
-    let midF = (from + to) / 2, mid = dir < 0 ? Math.ceil(midF) : Math.floor(midF)
-    if (mid == from) return pred(mid) ? from : to
-    if (pred(mid)) to = mid
-    else from = mid + dir
-  }
+    // At any point we are certain `to` satisfies `pred`, don't know
+    // whether `from` does.
+    let dir = from > to ? -1 : 1
+    for (; ;) {
+        if (from == to) return from
+        let midF = (from + to) / 2, mid = dir < 0 ? Math.ceil(midF) : Math.floor(midF)
+        if (mid == from) return pred(mid) ? from : to
+        if (pred(mid)) to = mid
+        else from = mid + dir
+    }
 }

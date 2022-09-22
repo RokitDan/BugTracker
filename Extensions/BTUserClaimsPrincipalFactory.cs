@@ -12,7 +12,6 @@ namespace BugTracker.Extensions
                                             IOptions<IdentityOptions> optionsAccessor)
             : base(userManager, roleManager, optionsAccessor)
         {
-
         }
 
         protected override async Task<ClaimsIdentity> GenerateClaimsAsync(BTUser user)
@@ -25,9 +24,5 @@ namespace BugTracker.Extensions
 
             return identity;
         }
-
-
-
-
     }
 }

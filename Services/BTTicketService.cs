@@ -1,8 +1,6 @@
 ﻿using BugTracker.Data;
 using BugTracker.Models;
-using BugTracker.Models.Enums;
 using BugTracker.Services.Interfaces;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace BugTracker.Services
@@ -14,7 +12,6 @@ namespace BugTracker.Services
         public BTTicketService(ApplicationDbContext context)
         {
             _context = context;
-
         }
 
         public async Task AddTicketAttachmentAsync(TicketAttachment ticketAttachment)
@@ -26,7 +23,6 @@ namespace BugTracker.Services
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
@@ -108,7 +104,6 @@ namespace BugTracker.Services
                 ticket.DeveloperUserId = userId;
 
                 await _context.SaveChangesAsync();
-
             }
             catch
             {
@@ -116,7 +111,7 @@ namespace BugTracker.Services
             }
         }
 
-        public async Task<List<Ticket>> GetAllTicketsByCompanyIdAsync(int companyId)
+        public async Task<List<Ticket>> GetCurrentTicketsByCompanyIdAsync(int companyId)
         {
             try
             {
@@ -133,6 +128,32 @@ namespace BugTracker.Services
                                             .Include(t => t.TicketStatus)
                                             .Include(t => t.TicketType)
                                             .Where(t => !t.Archived)
+                                            .ToListAsync();
+
+                return tickets;
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public async Task<List<Ticket>> GetAllTicketsByCompanyIdAsync(int companyId)
+        {
+            try
+            {
+                List<Ticket> tickets = await _context.Projects
+                                        .Where(p => p.CompanyId == companyId)
+                                        .SelectMany(p => p.Tickets)
+                                            .Include(t => t.Attachments)
+                                            .Include(t => t.Comments)
+                                            .Include(t => t.DeveloperUser)
+                                            .Include(t => t.History)
+                                            .Include(t => t.Project)
+                                            .Include(t => t.SubmitterUser)
+                                            .Include(t => t.TicketPriority)
+                                            .Include(t => t.TicketStatus)
+                                            .Include(t => t.TicketType)
                                             .ToListAsync();
 
                 return tickets;
@@ -170,8 +191,6 @@ namespace BugTracker.Services
             }
         }
 
-
-
         public async Task RestoreTicketAsync(int ticketId)
         {
             try
@@ -191,7 +210,6 @@ namespace BugTracker.Services
             {
                 _context.Update(ticket);
                 await _context.SaveChangesAsync();
-
             }
             catch
             {
@@ -237,4 +255,3 @@ namespace BugTracker.Services
         }
     }
 }
-

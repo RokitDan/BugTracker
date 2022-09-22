@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using BugTracker.Data;
+﻿using BugTracker.Data;
 using BugTracker.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BugTracker.Controllers
 {
@@ -22,9 +17,9 @@ namespace BugTracker.Controllers
         // GET: ProjectPriorities
         public async Task<IActionResult> Index()
         {
-              return _context.ProjectPriorities != null ? 
-                          View(await _context.ProjectPriorities.ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.ProjectPriorities'  is null.");
+            return _context.ProjectPriorities != null ?
+                        View(await _context.ProjectPriorities.ToListAsync()) :
+                        Problem("Entity set 'ApplicationDbContext.ProjectPriorities'  is null.");
         }
 
         // GET: ProjectPriorities/Details/5
@@ -150,14 +145,14 @@ namespace BugTracker.Controllers
             {
                 _context.ProjectPriorities.Remove(projectPriority);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool ProjectPriorityExists(int id)
         {
-          return (_context.ProjectPriorities?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.ProjectPriorities?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

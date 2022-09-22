@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BugTracker.Data;
+using BugTracker.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using BugTracker.Data;
-using BugTracker.Models;
 
 namespace BugTracker.Controllers
 {
@@ -161,14 +157,14 @@ namespace BugTracker.Controllers
             {
                 _context.TicketAttachments.Remove(ticketAttachment);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool TicketAttachmentExists(int id)
         {
-          return (_context.TicketAttachments?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.TicketAttachments?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
