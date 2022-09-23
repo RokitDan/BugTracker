@@ -25,6 +25,7 @@ namespace BugTracker.Services.Interfaces
         public Task<List<BTUser>> GetDevsAsync(int companyId);
 
         public Task<Project> GetProjectByIdAsync(int projectId);
+        public Task<List<Project>> GetUserProjectsAsync(string userId);
 
         public Task<BTUser>? GetProjectManagerAsync(int projectId);
 
@@ -45,5 +46,6 @@ namespace BugTracker.Services.Interfaces
         public Task<List<BTUser>> GetProjectMembersbyRoleAsync(int projectId, string roleName);
 
         Task<List<BTUser>> GetProjectMembersbyRoleAsync(ICollection<BTUser> memberList, string roleName);
+        public Task<List<Project>> GetAllProjectsByPriorityAsync(int companyId, string priority);
     }
 }

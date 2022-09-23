@@ -16,7 +16,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" enctype="multipart/form-data">
             <input type="hidden" asp-for="Project!.Id" />
             <input type="hidden" asp-for="Project!.CompanyId" />
             <input type="hidden" asp-for="Project!.ImageData" />
@@ -59,7 +59,7 @@
                 <span asp-validation-for="Project!.ImageFile" class="text-danger"></span>
             </div>
             <div class="square-img-container">
-                <img src="@ImageService.ConvertByteArrayToFile(Model.Project!.ImageData!, Model.Project!.ImageType!,(int)DefaultImage.ProjectImage)" alt="@Html.DisplayFor(modelItem => Model.Project!.Name)" style="max-width: 200px">
+                <img id="imageData" src="@ImageService.ConvertByteArrayToFile(Model.Project!.ImageData!, Model.Project!.ImageType!,(int)DefaultImage.ProjectImage)" alt="@Html.DisplayFor(modelItem => Model.Project!.Name)" style="max-width: 200px">
             </div>
 
             <div>

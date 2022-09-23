@@ -15,6 +15,7 @@ namespace BugTracker.Services.Interfaces
         public Task AssignTicketAsync(int ticketId, string userId);
 
         public Task<List<Ticket>> GetAllTicketsByCompanyIdAsync(int companyId);
+        public Task<List<Ticket>> GetTicketsByUserIdAsync(string userId, int companyId);
         public Task<List<Ticket>> GetCurrentTicketsByCompanyIdAsync(int companyId);
 
         public Task<List<Ticket>> GetArchivedTicketsByCompanyAsync(int companyId);

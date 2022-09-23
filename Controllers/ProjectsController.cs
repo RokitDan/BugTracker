@@ -372,5 +372,14 @@ namespace BugTracker.Controllers
         {
             return (_context.Projects?.Any(e => e.Id == id)).GetValueOrDefault();
         }
+
+        public async Task<IActionResult> MyProjects()
+        {
+            BTUser user = await _userManager.GetUserAsync(User);
+            string userId = user.Id;
+            var projects = await _projectService.GetUserProjectsAsync(userId);
+
+            return View(projects);
+        }
     }
 }

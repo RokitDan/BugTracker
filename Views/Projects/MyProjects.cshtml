@@ -1,0 +1,289 @@
+﻿@model IEnumerable<BugTracker.Models.Project>
+@using BugTracker.Enums
+@using BugTracker.Models.Enums
+@using BugTracker.Services
+@using BugTracker.Services.Interfaces
+
+@inject IImageService ImageService
+@inject IBTProjectService ProjectService
+@inject IBTRolesService RolesService
+
+
+@{
+    ViewData["Title"] = "My Projects";
+}
+
+
+<div class="row row-cols-2">
+    <div class="col my-auto"><h1>My Projects</h1></div>
+
+    <div class="col my-auto text-end">
+        <button id="addButton" class=" btn-outline-primary btn">
+            <a asp-action="Create" id="addIcon">
+                Create New
+                <i class="bi bi-plus-circle-fill"></i>
+            </a>
+        </button>
+    </div>
+</div>
+
+
+<div class="row pt-4">
+    <div class="col-lg-12">
+
+        <div class="card-body">
+            <!-- Projects Table -->
+            <div>
+                <table class="table table-bordered mb-0" id="project-table-details">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>
+                                Image
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Name)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Description)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.StartDate)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.EndDate)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Archived)
+                            </th>
+                            <th>
+                                Priority
+                            </th>
+                            <th>Project Manager</th>
+                            <th>Members</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Id</td>
+                                <td>
+                                    @if (item.ImageData != null)
+                                    {
+                                        <div class="square-img-container">
+                                            <img style="max-width: 50px; max-height: 50px;" class="square-img rounded-circle" src="data:image/*;base64,@(Convert.ToBase64String(item.ImageData))" alt="" />
+                                        </div>
+                                    }
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Description)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.StartDate)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.EndDate)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Archived)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ProjectPriority.Name)
+                                </td>
+                                <td>@((await ProjectService.GetProjectManagerAsync(item.Id))?.FullName)</td>
+                                <td>
+                                    @foreach (var member in item.Members)
+                                    {
+                                        <div>@member.FullName</div>
+                                    }
+                                </td>
+                                <td class="text-end">
+                                    <a asp-action="Details" asp-route-id="@item.Id"><i class="bi bi-card-list mx-1 biggerIcon"></i></a>
+                                    @if (User.IsInRole(BTRoles.Admin.ToString()))
+                                    {
+                                        <a asp-action="AssignProjectManager" asp-route-id="@item.Id"><i class="bi bi-person-plus-fill mx-1 biggerIcon"></i></a>
+                                    }
+                                    @{
+                                        var ProjectManagerID = (await ProjectService.GetProjectManagerAsync(item.Id))?.Id;
+                                    }
+                                    @if (User.IsInRole(nameof(BTRoles.Admin)) || ProjectManagerID != null)
+                                    {
+                                        <a asp-action="AddTeamMembers" asp-route-id="@item.Id"><i class="bi bi-people-fill text-info mx-1 biggerIcon"></i></a>
+                                        <a asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-pencil-fill mx-1 biggerIcon"></i></a>
+                                        @if (item.Archived)
+                                        {
+                                            <a asp-action="Restore" asp-route-id="@item.Id"><i class="bi bi-box-arrow-up mx-1 biggerIcon"></i></a>
+                                        }
+                                        else
+                                        {
+                                            <a asp-action="Archive" asp-route-id="@item.Id"><i class="bi bi-trash-fill mx-1 text-danger biggerIcon"></i></a>
+                                        }
+                                    }
+
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        </section>
+    </div>
+</div>
+@section scripts{
+    <script src="~/vendor/select2/js/select2.js"></script>
+    <script src="~/vendor/datatables/media/js/jquery.dataTables.min.js"></script>
+    <script src="~/vendor/datatables/media/js/dataTables.bootstrap5.min.js"></script>
+    <script src="~/vendor/datatables/extras/TableTools/Buttons-1.4.2/js/dataTables.buttons.min.js"></script>
+    <script src="~/vendor/datatables/extras/TableTools/Buttons-1.4.2/js/buttons.bootstrap4.min.js"></script>
+    <script src="~/vendor/datatables/extras/TableTools/Buttons-1.4.2/js/buttons.html5.min.js"></script>
+    <script src="~/vendor/datatables/extras/TableTools/Buttons-1.4.2/js/buttons.print.min.js"></script>
+    <script src="~/vendor/datatables/extras/TableTools/JSZip-2.5.0/jszip.min.js"></script>
+    <script src="~/vendor/datatables/extras/TableTools/pdfmake-0.1.32/pdfmake.min.js"></script>
+    <script src="~/vendor/datatables/extras/TableTools/pdfmake-0.1.32/vfs_fonts.js"></script>
+    <script src="~/js/examples/examples.datatables.default.js"></script>
+    <script src="~/js/examples/examples.datatables.tabletools.js"></script>
+    <script src="~/js/examples/examples.datatables.row.with.details.js"></script>
+    <script>
+        (function($) {
+            'use strict';
+            var datatableInit = function() {
+                var $table = $('#project-table-details');
+                // format function for row details
+                var fnFormatDetails = function(datatable, tr) {
+                    var data = datatable.fnGetData(tr);
+                    return [
+                        '<table class="table mb-0">',
+                        '<tr class="b-top-0">',
+                        '<td><label class="mb-0">Description:</label></td>',
+                        '<td>' + data[4] + '</td>',
+                        '</tr>',
+                        '<tr>',
+                        '<td><label class="mb-0">Project manager:</label></td>',
+                        '<td>' + data[9] + '</td>',
+                        '</tr>',
+                        '<tr>',
+                        '<td><label class="mb-0">Team Members:</label></td>',
+                        '<td><a href="/Projects/AddTeamMembers/' + data[1] + '">Manage Team Members</a></td>',
+                        '</tr>',
+                        '</table>'
+                    ].join('');
+                };
+                // insert the expand/collapse column
+                var th = document.createElement('th');
+                var td = document.createElement('td');
+                td.innerHTML = '<i data-toggle class="el el-chevron-down h5 m-0" style="cursor: pointer;"></i>';
+                td.className = "text-center";
+                $table
+                    .find('thead tr').each(function() {
+                        this.insertBefore(th, this.childNodes[0]);
+                    });
+                $table
+                    .find('tbody tr').each(function() {
+                        this.insertBefore(td.cloneNode(true), this.childNodes[0]);
+                    });
+                // initialize
+                var datatable = $table.dataTable({
+                    dom: '<"row"<"col-lg-6"l><"col-lg-6"f>><"table-responsive"t>p',
+                    aoColumnDefs: [
+                        { bSortable: false, aTargets: [0] },
+                        { bVisible: false, aTargets: [1] },
+                        { bVisible: false, aTargets: [4] },
+                        { bVisible: false, aTargets: [7] },
+                        { bVisible: false, aTargets: [8] },
+                        { bVisible: false, aTargets: [9] }
+                    ],
+                    aaSorting: [
+                        [4, 'desc']
+                    ],
+                });
+                // add a listener
+                $table.on('click', 'i[data-toggle]', function() {
+                    var $this = $(this),
+                        tr = $(this).closest('tr').get(0);
+                    if (datatable.fnIsOpen(tr)) {
+                        $this.removeClass('el el-chevron-up').addClass('el el-chevron-down');
+                        datatable.fnClose(tr);
+                    } else {
+                        $this.removeClass('el el-chevron-down').addClass('el el-chevron-up');
+                        datatable.fnOpen(tr, fnFormatDetails(datatable, tr), 'details');
+                    }
+                });
+            };
+            $(function() {
+                datatableInit();
+            });
+        }).apply(this, [jQuery]);
+    </script>
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

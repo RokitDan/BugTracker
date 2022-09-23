@@ -10,87 +10,87 @@
 <div>
     <a asp-action="Index">Back to Current Tickets</a>
 </div>
+<form asp-controller="Tickets" asp-action="Edit" method="post">
+    <main class="container">
+        <section class="mb-3 card">
+            <header class="card-header px-3 py-2 row row-cols-2">
+                <div class="col">
+                    <label asp-for="Title" class="control-label"></label>
+                    <input asp-for="Title" class="form-control mb-3" />
+                    <label asp-for="ProjectId" class="control-label"></label>
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                    <select asp-for="ProjectId" class="form-control" asp-items="ViewBag.ProjectId"></select>
+                </div>
+                <div class="col text-end text-light my-auto">
+                </div>
+            </header>
 
-<main class="container">
-    <section class="mb-3 card">
-        <header class="card-header px-3 py-2 row row-cols-2">
-            <div class="col">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control mb-3" />
-                <label asp-for="ProjectId" class="control-label"></label>
-                <span asp-validation-for="Title" class="text-danger"></span>
-                <select asp-for="ProjectId" class="form-control" asp-items="ViewBag.ProjectId"></select>
+
+            <div class="card-body row">
+                <div class="row">
+                    <div class="fw-bold">Description</div>
+                    <input asp-for="Description" class="form-control mb-3" />
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <hr />
+                <div class="row row-cols-1 row-cols-md-4">
+                    <div class="col">
+                        <div class="fw-bold">Priority</div>
+                        <select asp-for="TicketPriorityId" class="form-control" asp-items="ViewBag.TicketPriorityId"></select>
+                    </div>
+                    <div class="col">
+                        <div class="fw-bold">Created Date</div>
+                        <div>@Model.CreatedDate</div>
+                    </div>
+                    <div class="col">
+                        <div class="fw-bold">Submitter</div>
+                        <div>@Html.DisplayFor(modelItem => Model.SubmitterUser.FullName)</div>
+                    </div>
+                    <div class="col">
+                        <div class="fw-bold">Developer</div>
+                        <select asp-for="DeveloperUserId" class="form-control" asp-items="ViewBag.DeveloperUserId"></select>
+                    </div>
+
+                </div>
             </div>
-            <div class="col text-end text-light my-auto">
-            </div>
-        </header>
 
+            <div class="card-body row">
+                <div class="row row-cols-1 row-cols-md-4">
+                    <div class="col">
+                        <div class="fw-bold">Status</div>
+                        <select asp-for="TicketStatusId" class="form-control" asp-items="ViewBag.TicketStatusId"></select>
+                    </div>
+                    <div class="col">
+                        <div class="fw-bold">Ticket Type</div>
+                        <select asp-for="TicketTypeId" class="form-control" asp-items="ViewBag.TicketTypeId"></select>
+                    </div>
+                    <div class="col">
+                        <div class="fw-bold">Archived?</div>
+                        @if (Model.Archived == true)
+                        {
+                            <span>Yes</span>
+                        }
+                        else if (Model.ArchivedByProject == true)
+                        {
+                            <span>Yes, by Project</span>
+                        }
+                        else
+                        {
+                            <span>No</span>
+                        }
 
-        <div class="card-body row">
-            <div class="row">
-                <div class="fw-bold">Description</div>
-                <input asp-for="Description" class="form-control mb-3" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-
-            <hr />
-            <div class="row row-cols-1 row-cols-md-4">
-                <div class="col">
-                    <div class="fw-bold">Priority</div>
-                    <select asp-for="TicketPriorityId" class="form-control" asp-items="ViewBag.TicketPriorityId"></select>
-                </div>
-                <div class="col">
-                    <div class="fw-bold">Created Date</div>
-                    <div>@Model.CreatedDate</div>
-                </div>
-                <div class="col">
-                    <div class="fw-bold">Submitter</div>
-                    <div>@Html.DisplayFor(modelItem => Model.SubmitterUser.FullName)</div>
-                </div>
-                <div class="col">
-                    <div class="fw-bold">Developer</div>
-                    <select asp-for="DeveloperUserId" class="form-control" asp-items="ViewBag.DeveloperUserId"></select>
-                </div>
-
-            </div>
-        </div>
-
-        <div class="card-body row">
-            <div class="row row-cols-1 row-cols-md-4">
-                <div class="col">
-                    <div class="fw-bold">Status</div>
-                    <select asp-for="TicketStatusId" class="form-control" asp-items="ViewBag.TicketStatusId"></select>
-                </div>
-                <div class="col">
-                    <div class="fw-bold">Ticket Type</div>
-                    <div>@Model.TicketType.Name</div>
-                </div>
-                <div class="col">
-                    <div class="fw-bold">Archived?</div>
-                    @if (Model.Archived == true)
-                    {
-                        <span>Yes</span>
-                    }
-                    else if (Model.ArchivedByProject == true)
-                    {
-                        <span>Yes, by Project</span>
-                    }
-                    else
-                    {
-                        <span>No</span>
-                    }
-
-                </div>
-                <div class="col text-end">
-                    <div class="form-group">
-                        <input type="submit" value="Update" class="btn btn-primary" />
+                    </div>
+                    <div class="col text-end">
+                        <div class="form-group">
+                            <input type="submit" value="Update" class="btn btn-primary" />
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
-</main>
-
+        </section>
+    </main>
+</form>
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");

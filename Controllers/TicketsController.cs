@@ -156,10 +156,14 @@ namespace BugTracker.Controllers
             {
                 return NotFound();
             }
+
+            int companyId = User.Identity!.GetCompanyId();
             ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Name", ticket.ProjectId);
             ViewData["TicketPriorityId"] = new SelectList(_context.TicketPriorities, "Id", "Name", ticket.TicketPriorityId);
             ViewData["TicketTypeId"] = new SelectList(_context.TicketTypes, "Id", "Name", ticket.TicketTypeId);
             ViewData["TicketStatusId"] = new SelectList(_context.TicketTypes, "Id", "Name", ticket.TicketStatusId);
+            ViewData["DeveloperUserId"] = new SelectList(await _projectService.GetDevsAsync(companyId), "Id", "FullName");
+
             return View(ticket);
         }
 
@@ -416,6 +420,18 @@ namespace BugTracker.Controllers
         private bool TicketExists(int id)
         {
             return (_context.Tickets?.Any(e => e.Id == id)).GetValueOrDefault();
+        }
+
+
+        public async Task<IActionResult> MyTickets()
+        {
+            int companyId = User.Identity!.GetCompanyId();
+
+            BTUser user = await _userManager.GetUserAsync(User);
+            string userId = user.Id;
+            var tickets = await _ticketService.GetTicketsByUserIdAsync(userId, companyId);
+
+            return View(tickets.OrderByDescending(x => x.TicketPriority?.Id).ToList());
         }
     }
 }
