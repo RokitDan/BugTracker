@@ -4,6 +4,7 @@ using BugTracker.Models.Enums;
 using BugTracker.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace BugTracker.Services
 {
     public class BTTicketService : IBTTicketService
