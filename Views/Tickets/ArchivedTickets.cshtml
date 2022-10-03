@@ -6,63 +6,67 @@
 
 <section class="body">
     <div class="container">
+        <div class="container">
+            <div class="row row-cols-2">
+                <div class="col my-auto"><h1>My Tickets</h1></div>
+            </div>
 
-        @foreach (Ticket ticket in Model)
-        {
+            @foreach (Ticket ticket in Model)
+            {
 
 
-            <section class="card-dark mb-3">
+                <section class="card-dark mb-3">
 
-                <header class="card-header px-3 py-2 row row-cols-2">
-                    <div class="col">
-                        <div class="card-title">@ticket.Title</div>
-                        <div class="card-subtitle ">Project: @ticket.Project.Name</div>
-                    </div>
-                    <div class="col text-end text-light my-auto">
-                        <a asp-action="Details" id="detailsIconLight" asp-route-id="@ticket.Id"><i class="bi bi-card-list mx-1"></i></a>
-                        <a asp-action="Edit" id="editIconLight" class="mx-3" asp-route-id="@ticket.Id"><i class="bi bi-pencil-fill"></i></a>
-                        <a asp-action="Restore" id="deleteIconLight" asp-route-id="@ticket.Id">
-                            <i class="bi bi-box-arrow-up"></i>
-                        </a>
-                    </div>
-                </header>
-
-                <div class="card-body row">
-                    <div class="row">
-                        <div class="fw-bold">Description</div>
-                        <p>@ticket.Description</p>
-                    </div>
-
-                    <hr />
-                    <div class="row row-col-1 row-cols-md-4">
+                    <header class="card-header px-3 py-2 row row-cols-2">
                         <div class="col">
-                            <div class="fw-bold">Priority</div>
-                            <div>@ticket.TicketPriority.Name</div>
+                            <div class="card-title">@ticket.Title</div>
+                            <div class="card-subtitle ">Project: @ticket.Project.Name</div>
                         </div>
-                        <div class="col">
-                            <div class="fw-bold">Created Date</div>
-                            <div>@ticket.CreatedDate</div>
+                        <div class="col text-end text-light my-auto">
+                            <a asp-action="Details" id="detailsIconLight" asp-route-id="@ticket.Id"><i class="bi bi-card-list mx-1"></i></a>
+                            <a asp-action="Edit" id="editIconLight" class="mx-3" asp-route-id="@ticket.Id"><i class="bi bi-pencil-fill"></i></a>
+                            <a asp-action="Restore" id="deleteIconLight" asp-route-id="@ticket.Id">
+                                <i class="bi bi-box-arrow-up"></i>
+                            </a>
                         </div>
-                        <div class="col">
-                            <div class="fw-bold">Submitter</div>
-                            <div>@Html.DisplayFor(modelItem => ticket.SubmitterUser.FullName)</div>
-                        </div>
-                        <div class="col">
-                            <div class="fw-bold">Developer</div>
-                            @if (ticket.DeveloperUser == null)
-                            {
-                                <div><a asp-action="AssignDeveloper" asp-controller="Tickets">Assign Developer</a></div>
-                            }
-                            else
-                            {
-                                <div>@ticket.DeveloperUser.FullName</div>
-                            }
+                    </header>
 
+                    <div class="card-body row">
+                        <div class="row">
+                            <div class="fw-bold">Description</div>
+                            <p>@ticket.Description</p>
                         </div>
 
+                        <hr />
+                        <div class="row row-col-1 row-cols-md-4">
+                            <div class="col">
+                                <div class="fw-bold">Priority</div>
+                                <div>@ticket.TicketPriority.Name</div>
+                            </div>
+                            <div class="col">
+                                <div class="fw-bold">Created Date</div>
+                                <div>@ticket.CreatedDate</div>
+                            </div>
+                            <div class="col">
+                                <div class="fw-bold">Submitter</div>
+                                <div>@Html.DisplayFor(modelItem => ticket.SubmitterUser.FullName)</div>
+                            </div>
+                            <div class="col">
+                                <div class="fw-bold">Developer</div>
+                                @if (ticket.DeveloperUser == null)
+                                {
+                                    <div><a asp-action="AssignDeveloper" asp-controller="Tickets">Assign Developer</a></div>
+                                }
+                                else
+                                {
+                                    <div>@ticket.DeveloperUser.FullName</div>
+                                }
+
+                            </div>
+
+                        </div>
                     </div>
-                </div>
-            </section>
-        }
-    </div>
+                </section>
+            }
+        </div>
 </section>

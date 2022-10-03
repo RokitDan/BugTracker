@@ -18,22 +18,23 @@
 }
 
 
-<div class="row row-cols-2">
-    <div class="col my-auto"><h1>My Tickets</h1></div>
 
-    <div class="col my-auto text-end">
-        <button id="addButton" class=" btn-outline-primary btn">
-            <a asp-action="Create" id="addIcon">
-                Create New
-                <i class="bi bi-plus-circle-fill"></i>
-            </a>
-        </button>
-    </div>
-</div>
 
 
 <section class="body">
     <div class="container">
+        <div class="row row-cols-2">
+            <div class="col my-auto"><h1>My Tickets</h1></div>
+
+            <div class="col my-auto text-end">
+                <button id="addButton" class=" btn-outline-primary btn">
+                    <a asp-action="Create" id="addIcon">
+                        Create New
+                        <i class="bi bi-plus-circle-fill"></i>
+                    </a>
+                </button>
+            </div>
+        </div>
 
         @foreach (Ticket ticket in Model)
         {
