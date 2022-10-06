@@ -4,17 +4,26 @@
 @using BugTracker.Services
 @using BugTracker.Services.Interfaces
 @using BugTracker.Data
+@using BugTracker.Extensions
 
 @inject IImageService ImageService
 @inject IBTProjectService ProjectService
 @inject IBTRolesService RolesService
+@inject IBTTicketService _ticketService
 
 @{
     ViewData["Title"] = "Details";
 }
 
 
-<a asp-action="Index" asp-controller="Home">Back to Dashboard</a>
+<a asp-action="Dashboard" asp-controller="Home">See Dashboard</a>
+<a asp-action="Index" asp-controller="Projects">See Current Tickets</a>
+@if (User.IsInRole(nameof(BTRoles.Admin)) || User.IsInRole(nameof(BTRoles.ProjectManager)))
+{
+    <a asp-action="ArchivedProjects" asp-controller="Projects">See Archived Projects</a>
+} 
+
+
 <h1>Details</h1>
 
 <ul class="list-unstyled basic-list">
@@ -88,7 +97,7 @@
             @Html.DisplayNameFor(model => model.ImageData)
         </dt>
         <dd class="col-sm-10">
-            <img src="@ImageService.ConvertByteArrayToFile(Model.ImageData!, Model.ImageType!,(int)DefaultImage.ProjectImage)" alt="@Html.DisplayFor(modelItem => Model.Name)" style="width:40%; height:40%">
+            <img src="@ImageService.ConvertByteArrayToFile(Model.ImageData!, Model.ImageType!,(int)DefaultImage.ProjectImage)" alt="@Html.DisplayFor(modelItem => Model.Name)" style="max-width:40%;">
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.ImageType)
@@ -147,7 +156,67 @@
     <h3>Tickets</h3>
     @foreach (Ticket ticket in Model.Tickets)
     {
-        <p>@ticket.Title</p>
+        <section class="@(ticket.TicketPriority.GetSectionPriority()) mb-3">
+
+            <header class="card-header px-3 py-2 row row-cols-2">
+                <div class="col">
+                    @if (ticket.TicketPriority.Name != null)
+                    {
+                        @if (ticket.TicketPriority.Name == nameof(BTTicketPriorities.Urgent))
+
+                        {
+                            <div class="card-title"><i class="bi bi-exclamation-circle"></i><span class="mx-2">@ticket.Title</span></div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="card-title">@ticket.Title</div>
+                    }
+                    <div class="card-subtitle ">Project: @ticket.Project.Name</div>
+                </div>
+                <div class="col text-end text-light my-auto">
+                    <a asp-action="Details" id="detailsIconLight" asp-controller="Tickets" asp-route-id="@ticket.Id"><i class="bi bi-card-list mx-1"></i></a>
+                    <a asp-action="Edit" asp-controller="Tickets" id="editIconLight" class="mx-3" asp-route-id="@ticket.Id"><i class="bi bi-pencil-fill"></i></a>
+                    <a asp-action="Archive" id="deleteIconLight" asp-controller="Tickets" asp-route-id="@ticket.Id"><i class="bi bi-archive-fill editIconsLight"></i></a>
+                </div>
+            </header>
+
+            <div class="card-body row">
+                <div class="row">
+                    <div class="fw-bold">Description</div>
+                    <p>@ticket.Description</p>
+                </div>
+
+                <hr />
+                <div class="row row-cols-1 row-cols-md-4">
+                    <div class="col">
+                        <div class="fw-bold">Priority</div>
+                        <div>@ticket.TicketPriority.Name</div>
+                    </div>
+                    <div class="col">
+                        <div class="fw-bold">Created Date</div>
+                        <div>@ticket.CreatedDate</div>
+                    </div>
+                    <div class="col">
+                        <div class="fw-bold">Submitter</div>
+                        <div>@Html.DisplayFor(modelItem => ticket.SubmitterUser.FullName)</div>
+                    </div>
+                    <div class="col">
+                        <div class="fw-bold">Developer</div>
+                        @if (ticket.DeveloperUser == null)
+                        {
+                            <div><a asp-action="AssignDeveloper" asp-controller="Tickets" asp-route-ticketId="@ticket.Id">Assign Developer</a></div>
+                        }
+                        else
+                        {
+                            <div>@ticket.DeveloperUser.FullName</div>
+                        }
+
+                    </div>
+
+                </div>
+            </div>
+        </section>
     }
 
 </div>

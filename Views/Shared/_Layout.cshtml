@@ -63,97 +63,33 @@
     <!--Bootstrap Icons-->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css">
 
+        <!--Bootstrap 5-->
+    	https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css
+
+
+
 </head>
 <body>
     <section class="body">
 
         <!-- start: header -->
         <header class="header">
-            <div class="logo-container">
+            <nav class="navbar navbar-expand-md navbar-light fixed-top border-bottom border-light navShadow">
+                <div class="container-fluid justify-content-end">
+                    <div class="mx-2">
 
-                <div class="row">
-                    <div class="col">
-                    </div>
-                    <div class="col">
-                        <div class="d-md-none toggle-sidebar-left" data-toggle-class="sidebar-left-opened" data-target="html" data-fire-event="sidebar-left-opened">
-                            <i class="fas fa-bars" aria-label="Toggle sidebar"></i>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- start: search & user box -->
-            <div class="header-right">
-
-                @*                <form action="pages-search-results.html" class="search nav-form">
-                <div class="input-group">
-                <input type="text" class="form-control" name="q" id="q" placeholder="Search...">
-                <button class="btn btn-default" type="submit"><i class="bx bx-search"></i></button>
-                </div>
-                </form>*@
-
-                <span class="separator"></span>
-
-                <!-- Start Notifications -->
-                <ul class="notifications">
-                    <li>
-         @*               <a asp-controller="Tickets" asp-action="MyTickets" class="notification-icon">
-                            <i class="bx bx-list-ol"></i>
-                            <span class="badge">
-                                @{
-                                    int companyId = User.Identity!.GetCompanyId();
-                                    List<Ticket> myTickets = await ticketService.GetTicketsByUserIdAsync(userManager.GetUserId(User), companyId);
-                                }
-                                @(myTickets.Count())
-                            </span>
-                        </a>*@
-
-                       
-            
-                </ul>
-                <!-- End Notifications -->
-
-                <span class="separator"></span>
-
-                <div id="userbox" class="userbox">
-                    <a href="#" data-bs-toggle="dropdown">
-                        @*           <figure class="profile-picture">
-                        <img src="" />
-                        </figure>
-                        <div class="profile-info">
-                        @if (SignInManager.IsSignedIn(User))
+                        @if ((await userManager.GetUserAsync(User)) != null)
                         {
-                        <span class="name">@User.FullName</span>
-                        <span class="role">
-                        @{
-                        await rolesService.GetUserRolesAsync(User);
-                        }
-                        </span>
+                            <span class="h3">Hello, @((await userManager.GetUserAsync(User)).FirstName)! </span>
                         }
 
-                        </div>*@
 
-                        <i class="fa custom-caret"></i>
-                    </a>
-
-                    <div class="dropdown-menu">
-                        <ul class="list-unstyled mb-2">
-                            <li class="divider"></li>
-                            <li>
-                                <a role="menuitem" tabindex="-1" href="pages-user-profile.html"><i class="bx bx-user-circle"></i> My Profile</a>
-                            </li>
-                            <li>
-                                <a role="menuitem" tabindex="-1" href="#" data-lock-screen="true"><i class="bx bx-lock"></i> Lock Screen</a>
-                            </li>
-                            <li>
-                                <a role="menuitem" tabindex="-1" href="pages-signin.html"><i class="bx bx-power-off"></i> Logout</a>
-                            </li>
-                        </ul>
+                    </div>
+                    <div class="mx-3">
+                        <partial name="_LogoutPartial" />
                     </div>
                 </div>
-            </div>
-            <!-- end: search & user box -->
+            </nav>
         </header>
         <!-- end: header -->
 
@@ -162,12 +98,7 @@
             <aside id="sidebar-left" class="sidebar-left">
 
                 <div class="sidebar-header">
-                    <div class="sidebar-title">
 
-                        @if((await userManager.GetUserAsync(User)) !=null){
-                        <span class="h3">Hello, @((await userManager.GetUserAsync(User)).FirstName)! </span>
-                        }
-                    </div>
                     <div class="sidebar-toggle d-none d-md-block" data-toggle-class="sidebar-left-collapsed" data-target="html" data-fire-event="sidebar-left-toggle">
                         <i class="fas fa-bars" aria-label="Toggle sidebar"></i>
                     </div>
@@ -199,9 +130,13 @@
                                             <li><a class="nav-link" asp-area="" asp-controller="Projects" asp-action="Create">Create New</a></li>
                                             <li><a class="nav-link" asp-area="" asp-controller="Projects" asp-action="Index">Current Projects</a></li>
                                             <li><a class="nav-link" asp-area="" asp-controller="Projects" asp-action="MyProjects">My Projects</a></li>
-                                            <li><a class="nav-link" asp-area="" asp-controller="Projects" asp-action="AllProjects">All Projects</a></li>
-                                            <li><a class="nav-link" asp-area="" asp-controller="Projects" asp-action="UnassignedProjects">Unassigned Projects</a></li>
-                                            <li><a class="nav-link" asp-area="" asp-controller="Projects" asp-action="ArchivedProjects">Archived Projects</a></li>
+
+                                            @if (User.IsInRole(nameof(BTRoles.Admin)) || User.IsInRole(nameof(BTRoles.ProjectManager)))
+                                            {
+                                                <li><a class="nav-link" asp-area="" asp-controller="Projects" asp-action="AllProjects">All Projects</a></li>
+                                                <li><a class="nav-link" asp-area="" asp-controller="Projects" asp-action="UnassignedProjects">Unassigned Projects</a></li>
+                                                <li><a class="nav-link" asp-area="" asp-controller="Projects" asp-action="ArchivedProjects">Archived Projects</a></li>
+                                            }
                                         </ul>
                                     </li>
                                     <!--End DropDown-->
@@ -215,10 +150,13 @@
 
                                             <li><a class="nav-link" asp-area="" asp-controller="Tickets" asp-action="Create">Create New</a></li>
                                             <li><a class="nav-link" asp-area="" asp-controller="Tickets" asp-action="Index">Current Tickets</a></li>
-                                            <li><a class="nav-link" asp-area="" asp-controller="Tickets" asp-action="UnassignedTickets">Unassigned Tickets</a></li>
                                             <li><a class="nav-link" asp-area="" asp-controller="Tickets" asp-action="MyTickets">My Tickets</a></li>
-                                            <li><a class="nav-link" asp-area="" asp-controller="Tickets" asp-action="AllTickets">All Tickets</a></li>
-                                            <li><a class="nav-link" asp-area="" asp-controller="Tickets" asp-action="ArchivedTickets">Archived Tickets</a></li>
+                                            @if (User.IsInRole(nameof(BTRoles.Admin)) || User.IsInRole(nameof(BTRoles.ProjectManager)))
+                                            {
+                                                <li><a class="nav-link" asp-area="" asp-controller="Tickets" asp-action="UnassignedTickets">Unassigned Tickets</a></li>
+                                                <li><a class="nav-link" asp-area="" asp-controller="Tickets" asp-action="AllTickets">All Tickets</a></li>
+                                                <li><a class="nav-link" asp-area="" asp-controller="Tickets" asp-action="ArchivedTickets">Archived Tickets</a></li>
+                                            }
 
                                         </ul>
                                     </li>
@@ -308,17 +246,7 @@
     <script src="~/vendor/jqvmap/maps/continents/jquery.vmap.north-america.js"></script>
     <script src="~/vendor/jqvmap/maps/continents/jquery.vmap.south-america.js"></script>
 
-    @*
-    <!-- Vendor -->
-    <script src="~/vendor/jquery/jquery.js"></script>
-    <script src="~/vendor/jquery-browser-mobile/jquery.browser.mobile.js"></script>
-    <script src="~/vendor/popper/umd/popper.min.js"></script>
-    <script src="~/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="~/vendor/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
-    <script src="~/vendor/common/common.js"></script>
-    <script src="~/vendor/nanoscroller/nanoscroller.js"></script>
-    <script src="~/vendor/magnific-popup/jquery.magnific-popup.js"></script>
-    <script src="~/vendor/jquery-placeholder/jquery.placeholder.js"></script>*@
+
 
     <!-- Specific Table Page Vendor -->
     <script src="~/vendor/select2/js/select2.js"></script>
@@ -332,14 +260,7 @@
     <script src="~/vendor/datatables/extras/TableTools/pdfmake-0.1.32/pdfmake.min.js"></script>
     <script src="~/vendor/datatables/extras/TableTools/pdfmake-0.1.32/vfs_fonts.js"></script>
 
-    @*    <!-- Theme Base, Components and Settings -->
-    <script src="~/js/theme.js"></script>
-
-    <!-- Theme Custom -->
-    <script src="~/js/custom.js"></script>
-
-    <!-- Theme Initialization Files -->
-    <script src="~/js/theme.init.js"></script>*@
+  
 
     <!-- Examples -->
     <script src="~/js/examples/examples.dashboard.js"></script>
@@ -363,7 +284,7 @@
 
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
+    <script src="	https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
