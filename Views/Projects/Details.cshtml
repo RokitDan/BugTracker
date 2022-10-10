@@ -21,7 +21,7 @@
 @if (User.IsInRole(nameof(BTRoles.Admin)) || User.IsInRole(nameof(BTRoles.ProjectManager)))
 {
     <a asp-action="ArchivedProjects" asp-controller="Projects">See Archived Projects</a>
-} 
+}
 
 
 <h1>Details</h1>
@@ -167,10 +167,11 @@
                         {
                             <div class="card-title"><i class="bi bi-exclamation-circle"></i><span class="mx-2">@ticket.Title</span></div>
                         }
-                    }
-                    else
-                    {
-                        <div class="card-title">@ticket.Title</div>
+
+                        else
+                        {
+                            <div class="card-title">@ticket.Title</div>
+                        }
                     }
                     <div class="card-subtitle ">Project: @ticket.Project.Name</div>
                 </div>

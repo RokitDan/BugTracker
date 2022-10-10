@@ -83,6 +83,7 @@ namespace BugTracker.Services
                                               .Include(p => p.Company)
                                               .Include(p => p.ProjectPriority)
                                               .Include(p => p.Members)
+                                              .Include(p => p.Tickets)
                                               .Where(p => p.CompanyId == companyId)
                                               .ToListAsync();
             }
@@ -100,6 +101,8 @@ namespace BugTracker.Services
                 .Include(p => p.Company)
                 .Include(p => p.Tickets)
                 .ThenInclude(t => t.TicketPriority)
+                .Include(p => p.Tickets)
+                .ThenInclude(t => t.DeveloperUser)
                 .Include(p => p.ProjectPriority)
                 .Include(p => p.Members)
                 .FirstOrDefaultAsync(m => m.Id == projectId);
