@@ -46,7 +46,7 @@ namespace BugTracker.Services
                 var host = _mailSettings.EmailHost ?? Environment.GetEnvironmentVariable("EmailHost");
                 var port = _mailSettings.EmailPort != 0 ? _mailSettings.EmailPort : int.Parse(Environment.GetEnvironmentVariable("EmailPort")!);
                 await smtpClient.ConnectAsync(host, port, SecureSocketOptions.StartTls);
-                await smtpClient.AuthenticateAsync(emailSender, _mailSettings.EmailPassword ?? Environment.GetEnvironmentVariable("Password"));
+                await smtpClient.AuthenticateAsync(emailSender, _mailSettings.EmailPassword ?? Environment.GetEnvironmentVariable("EmailPassword"));
 
                 await smtpClient.SendAsync(newEmail);
                 await smtpClient.DisconnectAsync(true);
